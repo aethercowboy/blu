@@ -32,7 +32,21 @@ namespace blu.Sources
 
             string lookupUrl = Url.Replace("[QUERY]", query);
 
-            string response = wc.DownloadString(lookupUrl);
+            string response = null;
+
+            try
+            {
+                response = wc.DownloadString(lookupUrl);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            if (response == null)
+            {
+                yield break;
+            }
 
             HtmlDocument doc = new HtmlDocument();
 

@@ -31,10 +31,17 @@ namespace blu
 
             foreach (Type t in libraryTypes)
             {
-                Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
-                var value = LibraryResponse(t, title, author);
-                Console.WriteLine(value);
-                Console.WriteLine();
+                try
+                {
+                    Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
+                    var value = LibraryResponse(t, title, author);
+                    Console.WriteLine(value);
+                    Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -65,7 +72,8 @@ namespace blu
 
             List<string> values = new List<string>();
 
-            foreach(Format fmt in (Format[]) Enum.GetValues(typeof(Format))) {
+            foreach (Format fmt in (Format[])Enum.GetValues(typeof(Format)))
+            {
                 var entries = lib.Lookup(title, author, fmt)
                     .Where(x => x.ToLower().Contains(title));
 

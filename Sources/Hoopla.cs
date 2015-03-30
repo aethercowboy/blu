@@ -41,7 +41,7 @@ namespace blu.Sources
 
             doc.LoadHtml(response);
 
-            var childNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' audiobook ')]");
+            var childNodes = doc.DocumentNode.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' row ')]");
 
             if (childNodes == null)
             {
@@ -50,7 +50,7 @@ namespace blu.Sources
 
             foreach (HtmlNode element in childNodes)
             {
-                var valid = element.SelectNodes("p[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
+                var valid = element.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' columns ')]");
 
                 if (valid == null || !valid.Any())
                 {
