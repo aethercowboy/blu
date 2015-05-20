@@ -1,31 +1,35 @@
-﻿using blu.Enums;
-using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+using Blu.Enums;
+using HtmlAgilityPack;
 
-namespace blu.Sources
+namespace Blu.Sources
 {
-    public class LibriVox : ILibrary
+    [Export(typeof(ILibrary))]
+    public class Librivox : ILibrary
     {
-        private static IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> allowedFormats = new List<Format>
         {
             Format.DownloadableAudiobook,
         };
 
-        private string url = "https://librivox.org/api/feed/audiobooks?[QUERY]";
+        private readonly string url = "https://librivox.org/api/feed/audiobooks?[QUERY]";
+
         public string Url
         {
-            get { return url; }
+            get
+            {
+                return url;
+            }
         }
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            WebClient wc = new WebClient();
+            var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
             if (!allowedFormats.Contains(format))
@@ -43,9 +47,8 @@ namespace blu.Sources
             {
                 response = wc.DownloadString(lookupUrl);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
             }
 
             if (response == null)
@@ -53,21 +56,23 @@ namespace blu.Sources
                 yield break;
             }
 
-            HtmlDocument doc = new HtmlDocument();
+            var doc = new HtmlDocument();
 
             doc.LoadHtml(response);
 
-            var childNodes = doc.DocumentNode.SelectNodes("//books");
+            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//books");
 
-            if (childNodes == null) {
+            if (childNodes == null)
+            {
                 yield break;
             }
 
             foreach (HtmlNode element in childNodes)
             {
-                var valid = element.SelectNodes("book");
+                HtmlNodeCollection valid = element.SelectNodes("book");
 
-                if (valid == null || !valid.Any()) {
+                if (valid == null || !valid.Any())
+                {
                     yield break;
                 }
 
@@ -77,7 +82,7 @@ namespace blu.Sources
 
         private string BuildQuery(string title, string author)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.Append(String.Format("title={0}", title.Replace(" ", "+")));
 
@@ -87,10 +92,10 @@ namespace blu.Sources
             sb.Append(String.Format("&recorded_language=1"));
 
             return sb.ToString()
-                .Replace(" ", "%20")
-                .Replace(":", "%3A")
-                .Replace("(", "%28")
-                .Replace(")", "%29");
+                     .Replace(" ", "%20")
+                     .Replace(":", "%3A")
+                     .Replace("(", "%28")
+                     .Replace(")", "%29");
         }
     }
 }

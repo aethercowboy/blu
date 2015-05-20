@@ -1,20 +1,20 @@
-﻿using blu.Enums;
-using blu.Sources;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using blu.Extensions;
+using System.Reflection;
+using Blu.Enums;
+using Blu.Extensions;
+using Blu.Sources;
 
-namespace blu
+namespace Blu
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //args = new string[] { "oliver", "twist", "dickens" };
-
             string title = String.Join(" ", args.Take(args.Length - 1));
             string author = args.Last();
 
@@ -22,21 +22,23 @@ namespace blu
             Console.WriteLine("Author: {0}", author);
             Console.WriteLine("========================================");
 
-            List<Type> libraryTypes = new List<Type>() {
-                typeof(Gutenberg),
-                typeof(LibriVox),
-                typeof(GeaugaCountyPublicLibrary),
-                typeof(Clevnet),
-                typeof(HarrisCountyPublicLibrary),
-                typeof(Hoopla)
-            };
+            BlueEngine _blueEngine;
 
-            foreach (Type t in libraryTypes)
+            using (var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly()))
+            {
+                var container = new CompositionContainer(catalog);
+                _blueEngine = new BlueEngine();
+                container.ComposeParts(_blueEngine);
+            }
+
+            foreach (var library in _blueEngine.Libraries)
             {
                 try
                 {
+                    Type t = library.GetType();
+
                     Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
-                    var value = LibraryResponse(t, title, author);
+                    string value = LibraryResponse(library, title, author);
                     Console.WriteLine(value);
                     Console.WriteLine();
                 }
@@ -47,37 +49,14 @@ namespace blu
             }
         }
 
-        private static string LibraryResponse<T>(string title, string author)
-            where T : ILibrary, new()
+        private static string LibraryResponse(ILibrary library, string title, string author)
         {
-            ILibrary lib = (ILibrary)Activator.CreateInstance<T>();
-
-            List<string> values = new List<string>();
+            var values = new List<string>();
 
             foreach (Format fmt in (Format[])Enum.GetValues(typeof(Format)))
             {
-                var entries = lib.Lookup(title, author, fmt)
-                    .Where(x => x.ToLower().Contains(title));
-
-                if (entries.Any())
-                {
-                    values.Add(GetCode(fmt));
-                }
-            }
-
-            return String.Join("/", values);
-        }
-
-        private static string LibraryResponse(Type t, string title, string author)
-        {
-            ILibrary lib = (ILibrary) Activator.CreateInstance(t);
-
-            List<string> values = new List<string>();
-
-            foreach (Format fmt in (Format[])Enum.GetValues(typeof(Format)))
-            {
-                var entries = lib.Lookup(title, author, fmt)
-                    .Where(x => x.ToLower().Contains(title));
+                IEnumerable<string> entries = library.Lookup(title, author, fmt)
+                                                 .Where(x => x.ToLower().Contains(title));
 
                 if (entries.Any())
                 {

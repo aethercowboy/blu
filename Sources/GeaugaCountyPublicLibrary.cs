@@ -1,18 +1,18 @@
-﻿using blu.Enums;
-using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+using HtmlAgilityPack;
+using Blu.Enums;
+using System.ComponentModel.Composition;
 
-namespace blu.Sources
+namespace Blu.Sources
 {
+    [Export(typeof(ILibrary))]
     public class GeaugaCountyPublicLibrary : ILibrary
     {
-        private static IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> allowedFormats = new List<Format>
         {
             Format.AudiobookCD,
             Format.DownloadableAudiobook,
@@ -20,10 +20,14 @@ namespace blu.Sources
             Format.Print,
         };
 
-        private string url = "http://geapl-mt.iii.com/iii/encore/search/C__S[QUERY]__Orightresult__U?lang=eng&suite=cobalt";
+        private readonly string url = "http://geapl-mt.iii.com/iii/encore/search/C__S[QUERY]__Orightresult__U?lang=eng&suite=cobalt";
+
         public string Url
         {
-            get { return url; }
+            get
+            {
+                return url;
+            }
         }
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
@@ -33,7 +37,7 @@ namespace blu.Sources
                 yield break;
             }
 
-            WebClient wc = new WebClient();
+            var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
             string query = BuildQuery(title, author, format);
@@ -42,19 +46,20 @@ namespace blu.Sources
 
             string response = wc.DownloadString(lookupUrl);
 
-            HtmlDocument doc = new HtmlDocument();
+            var doc = new HtmlDocument();
 
             doc.LoadHtml(response);
 
-            var childNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' dpBibTitle ')]");
+            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' dpBibTitle ')]");
 
-            if (childNodes == null) {
+            if (childNodes == null)
+            {
                 yield break;
             }
 
             foreach (HtmlNode element in childNodes)
             {
-                var valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
+                HtmlNodeCollection valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
 
                 if (valid == null || !valid.Any())
                 {
@@ -67,7 +72,7 @@ namespace blu.Sources
 
         private string BuildQuery(string title, string author, Format format)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.Append(String.Format("t:({0}) ", title));
 
@@ -75,7 +80,8 @@ namespace blu.Sources
 
             string fmt = String.Empty;
 
-            switch (format) {
+            switch (format)
+            {
                 case Format.DownloadableAudiobook:
                     fmt = "y";
                     break;
@@ -95,10 +101,10 @@ namespace blu.Sources
             sb.Append(String.Format("f:({0})", fmt));
 
             return sb.ToString()
-                .Replace(" ", "%20")
-                .Replace(":", "%3A")
-                .Replace("(", "%28")
-                .Replace(")", "%29");
+                     .Replace(" ", "%20")
+                     .Replace(":", "%3A")
+                     .Replace("(", "%28")
+                     .Replace(")", "%29");
         }
     }
 }
