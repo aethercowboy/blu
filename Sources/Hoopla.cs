@@ -11,7 +11,14 @@ namespace blu.Sources
 {
     class Hoopla : ILibrary
     {
-        private string url = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=AUDIOBOOK";
+        private static IList<Format> allowedFormats = new List<Format>
+        {
+            Format.DownloadableAudiobook,
+            Format.EBook,
+            Format.EComic,
+        };
+
+        private string url = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
 
         public string Url
         {
@@ -23,7 +30,7 @@ namespace blu.Sources
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (format != Format.DownloadableAudiobook)
+            if (!allowedFormats.Contains(format))
             {
                 yield break;
             }
@@ -32,8 +39,10 @@ namespace blu.Sources
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
             string query = BuildQuery(title, author);
+            string kind = GetKind(format);
 
-            string lookupUrl = Url.Replace("[QUERY]", query);
+            string lookupUrl = Url.Replace("[QUERY]", query)
+                .Replace("[KIND]", kind);
 
             string response = wc.DownloadString(lookupUrl);
 
@@ -58,6 +67,21 @@ namespace blu.Sources
                 }
 
                 yield return valid.FirstOrDefault().InnerText;
+            }
+        }
+
+        private string GetKind(Format format)
+        {
+            switch (format)
+            {
+                case Format.DownloadableAudiobook:
+                    return "AUDIOBOOK";
+                case Format.EBook:
+                    return "EBOOK";
+                case Format.EComic:
+                    return "COMIC";
+                default:
+                    return String.Empty;
             }
         }
 

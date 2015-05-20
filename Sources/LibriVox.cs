@@ -12,6 +12,11 @@ namespace blu.Sources
 {
     public class LibriVox : ILibrary
     {
+        private static IList<Format> allowedFormats = new List<Format>
+        {
+            Format.DownloadableAudiobook,
+        };
+
         private string url = "https://librivox.org/api/feed/audiobooks?[QUERY]";
         public string Url
         {
@@ -23,7 +28,7 @@ namespace blu.Sources
             WebClient wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            if (format != Format.DownloadableAudiobook)
+            if (!allowedFormats.Contains(format))
             {
                 yield break;
             }

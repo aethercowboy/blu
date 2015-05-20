@@ -12,6 +12,14 @@ namespace blu.Sources
 {
     public class Clevnet : ILibrary
     {
+        private static IList<Format> allowedFormats = new List<Format>
+        {
+            Format.AudiobookCD,
+            Format.DownloadableAudiobook,
+            Format.EBook,
+            Format.Print,
+        };
+
         private string url = "http://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=false";
         public string Url
         {
@@ -20,6 +28,11 @@ namespace blu.Sources
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
+            if (!allowedFormats.Contains(format))
+            {
+                yield break;
+            }
+
             WebClient wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 

@@ -12,6 +12,12 @@ namespace blu.Sources
 {
     public class HarrisCountyPublicLibrary : ILibrary
     {
+        private static IList<Format> allowedFormats = new List<Format>
+        {
+            Format.DownloadableAudiobook,
+            Format.EBook,
+        };
+
         private string url = "http://hcpl.ent.sirsi.net/client/webcat/search/results?qu=[QUERY]";
         public string Url
         {
@@ -20,7 +26,7 @@ namespace blu.Sources
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (format == Format.AudiobookCD || format == Format.Print)
+            if (!allowedFormats.Contains(format))
             {
                 yield break;
             }

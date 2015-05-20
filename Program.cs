@@ -100,6 +100,8 @@ namespace blu
                     return "C";
                 case Format.Print:
                     return "P";
+                case Format.EComic:
+                    return "B";
                 default:
                     return "?";
             }

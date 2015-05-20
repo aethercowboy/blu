@@ -14,10 +14,15 @@ namespace blu.Sources
 {
     public class Gutenberg : ILibrary
     {
+        private static IList<Format> allowedFormats = new List<Format>
+        {
+            Format.EBook,
+        };
+
         private static Object _locker = new Object();
 
         private string _filename = "gutenberg-api.txt";
-        private DateTime _lastAccess;
+        private DateTime _nextAccessTime;
 
         private string url = "https://www.gutenberg.org/ebooks/search/?query=[QUERY]";
         public string Url
@@ -36,14 +41,21 @@ namespace blu.Sources
             {
                 var access = reader.ReadLine();
 
-                if (!DateTime.TryParse(access, out _lastAccess))
+                if (!DateTime.TryParse(access, out _nextAccessTime))
                 {
-                    _lastAccess = DateTime.Now;
+                    _nextAccessTime = DateTime.Now;
                 }
             }
         }
 
         private void UpdateAccessTime()
+        {
+            TimeSpan ts = new TimeSpan(0, 0, 30);
+
+            UpdateAccessTime(ts);
+        }
+
+        private void UpdateAccessTime(TimeSpan ts)
         {
             if (!File.Exists(_filename))
             {
@@ -52,32 +64,28 @@ namespace blu.Sources
 
             using (StreamWriter writer = new StreamWriter(_filename))
             {
-                var date = DateTime.Now;
+                var date = DateTime.Now + ts;
 
                 writer.WriteLine(date);
-                _lastAccess = date;
+                _nextAccessTime = date;
             }
         }
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (format != Format.EBook)
+            if (!allowedFormats.Contains(format))
             {
                 yield break;
             }
 
             lock (_locker)
             {
-                var _lastAccessPlusTenSeconds = _lastAccess.AddSeconds(10);
                 var now = DateTime.Now;
 
-                if (_lastAccessPlusTenSeconds > now)
+                if (_nextAccessTime > now)
                 {
-                    var ts = _lastAccessPlusTenSeconds - now;
-
-                    Console.Write(String.Format("Waiting {0} seconds...", ts.TotalSeconds));
-                    Thread.Sleep(ts);
-                    Console.WriteLine("Done");
+                    Console.WriteLine("?");
+                    yield break;
                 }
 
                 WebClient wc = new WebClient();
@@ -87,7 +95,20 @@ namespace blu.Sources
 
                 string lookupUrl = Url.Replace("[QUERY]", query);
 
-                string response = wc.DownloadString(lookupUrl);
+                string response;
+
+                try
+                {
+                    response = wc.DownloadString(lookupUrl);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Gutenberg is blocking us. Let's wait a day.");
+                    TimeSpan wait = new TimeSpan(24, 0, 0);
+
+                    UpdateAccessTime(wait);
+                    yield break;
+                }
 
                 HtmlDocument doc = new HtmlDocument();
 

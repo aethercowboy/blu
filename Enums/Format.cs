@@ -12,5 +12,6 @@ namespace blu.Enums
         EBook,
         AudiobookCD,
         Print,
+        EComic,
     }
 }
