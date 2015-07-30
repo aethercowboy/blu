@@ -22,31 +22,36 @@ namespace Blu
             Console.WriteLine("Author: {0}", author);
             Console.WriteLine("========================================");
 
-            BlueEngine _blueEngine;
+            BlueEngine _blueEngine = new BlueEngine();
 
-            using (var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly()))
+            using (var catalog = new AggregateCatalog())
             {
+                var assemblyCatalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
+                catalog.Catalogs.Add(assemblyCatalog);
+
+                var directoryCatalog = new DirectoryCatalog("Plugins");
+                catalog.Catalogs.Add(directoryCatalog);
+
                 var container = new CompositionContainer(catalog);
-                _blueEngine = new BlueEngine();
                 container.ComposeParts(_blueEngine);
             }
 
-            foreach (var library in _blueEngine.Libraries)
-            {
-                try
+                foreach (var library in _blueEngine.Libraries)
                 {
-                    Type t = library.GetType();
+                    try
+                    {
+                        Type t = library.GetType();
 
-                    Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
-                    string value = LibraryResponse(library, title, author);
-                    Console.WriteLine(value);
-                    Console.WriteLine();
+                        Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
+                        string value = LibraryResponse(library, title, author);
+                        Console.WriteLine(value);
+                        Console.WriteLine();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
         }
 
         private static string LibraryResponse(ILibrary library, string title, string author)
