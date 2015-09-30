@@ -1,36 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using HtmlAgilityPack;
 using Blu.Enums;
-using System.ComponentModel.Composition;
+using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof(ILibrary))]
+    [Export(typeof (ILibrary))]
     public class HarrisCountyPublicLibrary : ILibrary
     {
-        private static readonly IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> AllowedFormats = new List<Format>
         {
             Format.DownloadableAudiobook,
-            Format.EBook,
+            Format.EBook
         };
 
-        private readonly string url = "http://hcpl.ent.sirsi.net/client/webcat/search/results?qu=[QUERY]";
-
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-        }
+        public string Url { get; } = "http://hcpl.ent.sirsi.net/client/webcat/search/results?qu=[QUERY]";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (!allowedFormats.Contains(format))
+            if (!AllowedFormats.Contains(format))
             {
                 yield break;
             }
@@ -38,33 +29,36 @@ namespace Blu.Sources
             var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            string query = BuildQuery(title, author, format);
+            var query = BuildQuery(title, author, format);
 
-            string lookupUrl = Url.Replace("[QUERY]", query);
+            var lookupUrl = Url.Replace("[QUERY]", query);
 
-            string response = wc.DownloadString(lookupUrl);
+            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 
             doc.LoadHtml(response);
 
-            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' results_cell ')]");
+            var childNodes =
+                doc.DocumentNode.SelectNodes(
+                    "//div[contains(concat(' ', normalize-space(@class), ' '), ' results_cell ')]");
 
             if (childNodes == null)
             {
                 yield break;
             }
 
-            foreach (HtmlNode element in childNodes)
+            foreach (
+                var firstOrDefault in
+                    childNodes.Select(
+                        element =>
+                            element.SelectNodes(
+                                "div[contains(concat(' ', normalize-space(@class), ' '), ' results_bio ')]"))
+                        .TakeWhile(valid => valid != null && valid.Any())
+                        .Select(valid => valid.FirstOrDefault())
+                        .Where(firstOrDefault => firstOrDefault != null))
             {
-                HtmlNodeCollection valid = element.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' results_bio ')]");
-
-                if (valid == null || !valid.Any())
-                {
-                    yield break;
-                }
-
-                yield return valid.FirstOrDefault().InnerText;
+                yield return firstOrDefault.InnerText;
             }
         }
 
@@ -72,11 +66,11 @@ namespace Blu.Sources
         {
             var sb = new StringBuilder();
 
-            sb.Append(String.Format("&qu=TITLE%3D{0}", title));
+            sb.Append($"&qu=TITLE%3D{title}");
 
-            sb.Append(String.Format("&qu=AUTHOR%3D{0} ", author));
+            sb.Append($"&qu=AUTHOR%3D{author} ");
 
-            string fmt = String.Empty;
+            var fmt = string.Empty;
 
             switch (format)
             {
@@ -86,18 +80,16 @@ namespace Blu.Sources
                 case Format.EBook:
                     fmt = "E_BOOK\teBook";
                     break;
-                default:
-                    break;
             }
 
-            sb.Append(String.Format("&qf=FORMAT\tFormat\t{0}", fmt));
+            sb.Append($"&qf=FORMAT\tFormat\t{fmt}");
 
             return sb.ToString()
-                     .Replace("\t", "%09")
-                     .Replace(" ", "%20")
-                     .Replace(":", "%3A")
-                     .Replace("(", "%28")
-                     .Replace(")", "%29");
+                .Replace("\t", "%09")
+                .Replace(" ", "%20")
+                .Replace(":", "%3A")
+                .Replace("(", "%28")
+                .Replace(")", "%29");
         }
     }
 }

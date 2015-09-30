@@ -1,16 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Blu.Extensions
 {
     public static class StringExtensions
     {
-        public static string UnCamelCase(this String str)
+        public static string UnCamelCase(this string str)
         {
+            if (str == null)
+            {
+                return str;
+            }
+
             var pattern = new Regex(@"([a-z])([A-Z])");
 
-            string retval = pattern.Replace(str, "$1 $2");
+            var retval = pattern.Replace(str, "$1 $2");
 
             return retval;
         }

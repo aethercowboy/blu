@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
@@ -10,19 +9,19 @@ using Blu.Sources;
 
 namespace Blu
 {
-    internal class Program
+    internal static class Program
     {
         private static void Main(string[] args)
         {
             //args = new string[] { "oliver", "twist", "dickens" };
-            string title = String.Join(" ", args.Take(args.Length - 1));
-            string author = args.Last();
+            var title = string.Join(" ", args.Take(args.Length - 1));
+            var author = args.Last();
 
             Console.WriteLine("Title: {0}", title);
             Console.WriteLine("Author: {0}", author);
             Console.WriteLine("========================================");
 
-            BlueEngine _blueEngine = new BlueEngine();
+            var blueEngine = new BlueEngine();
 
             using (var catalog = new AggregateCatalog())
             {
@@ -33,43 +32,35 @@ namespace Blu
                 catalog.Catalogs.Add(directoryCatalog);
 
                 var container = new CompositionContainer(catalog);
-                container.ComposeParts(_blueEngine);
+                container.ComposeParts(blueEngine);
             }
 
-                foreach (var library in _blueEngine.Libraries)
+            foreach (var library in blueEngine.Libraries)
+            {
+                try
                 {
-                    try
-                    {
-                        Type t = library.GetType();
+                    var t = library.GetType();
 
-                        Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
-                        string value = LibraryResponse(library, title, author);
-                        Console.WriteLine(value);
-                        Console.WriteLine();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+                    Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
+                    var value = LibraryResponse(library, title, author);
+                    Console.WriteLine(value);
+                    Console.WriteLine();
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
         private static string LibraryResponse(ILibrary library, string title, string author)
         {
-            var values = new List<string>();
+            var values = (from fmt in (Format[]) Enum.GetValues(typeof (Format))
+                let entries = library.Lookup(title, author, fmt).Where(x => x.ToLower().Contains(title))
+                where entries.Any()
+                select GetCode(fmt)).ToList();
 
-            foreach (Format fmt in (Format[])Enum.GetValues(typeof(Format)))
-            {
-                IEnumerable<string> entries = library.Lookup(title, author, fmt)
-                                                 .Where(x => x.ToLower().Contains(title));
-
-                if (entries.Any())
-                {
-                    values.Add(GetCode(fmt));
-                }
-            }
-
-            return String.Join("/", values);
+            return string.Join("/", values);
         }
 
         private static string GetCode(Format fmt)

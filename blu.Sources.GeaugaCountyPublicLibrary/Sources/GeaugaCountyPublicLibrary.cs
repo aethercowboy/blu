@@ -1,38 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using HtmlAgilityPack;
 using Blu.Enums;
-using System.ComponentModel.Composition;
+using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof(ILibrary))]
+    [Export(typeof (ILibrary))]
     public class GeaugaCountyPublicLibrary : ILibrary
     {
-        private static readonly IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> AllowedFormats = new List<Format>
         {
             Format.AudiobookCD,
             Format.DownloadableAudiobook,
             Format.EBook,
-            Format.Print,
+            Format.Print
         };
 
-        private readonly string url = "http://geapl-mt.iii.com/iii/encore/search/C__S[QUERY]__Orightresult__U?lang=eng&suite=cobalt";
-
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-        }
+        public string Url { get; } =
+            "http://geapl-mt.iii.com/iii/encore/search/C__S[QUERY]__Orightresult__U?lang=eng&suite=cobalt";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (!allowedFormats.Contains(format))
+            if (!AllowedFormats.Contains(format))
             {
                 yield break;
             }
@@ -40,33 +32,36 @@ namespace Blu.Sources
             var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            string query = BuildQuery(title, author, format);
+            var query = BuildQuery(title, author, format);
 
-            string lookupUrl = Url.Replace("[QUERY]", query);
+            var lookupUrl = Url.Replace("[QUERY]", query);
 
-            string response = wc.DownloadString(lookupUrl);
+            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 
             doc.LoadHtml(response);
 
-            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' dpBibTitle ')]");
+            var childNodes =
+                doc.DocumentNode.SelectNodes(
+                    "//div[contains(concat(' ', normalize-space(@class), ' '), ' dpBibTitle ')]");
 
             if (childNodes == null)
             {
                 yield break;
             }
 
-            foreach (HtmlNode element in childNodes)
+            foreach (var element in childNodes)
             {
-                HtmlNodeCollection valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
+                var valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
 
                 if (valid == null || !valid.Any())
                 {
                     yield break;
                 }
 
-                yield return valid.FirstOrDefault().InnerText;
+                var firstOrDefault = valid.FirstOrDefault();
+                if (firstOrDefault != null) yield return firstOrDefault.InnerText;
             }
         }
 
@@ -74,11 +69,11 @@ namespace Blu.Sources
         {
             var sb = new StringBuilder();
 
-            sb.Append(String.Format("t:({0}) ", title));
+            sb.Append($"t:({title}) ");
 
-            sb.Append(String.Format("a:({0}) ", author));
+            sb.Append($"a:({author}) ");
 
-            string fmt = String.Empty;
+            var fmt = string.Empty;
 
             switch (format)
             {
@@ -94,17 +89,15 @@ namespace Blu.Sources
                 case Format.Print:
                     fmt = "a";
                     break;
-                default:
-                    break;
             }
 
-            sb.Append(String.Format("f:({0})", fmt));
+            sb.Append($"f:({fmt})");
 
             return sb.ToString()
-                     .Replace(" ", "%20")
-                     .Replace(":", "%3A")
-                     .Replace("(", "%28")
-                     .Replace(")", "%29");
+                .Replace(" ", "%20")
+                .Replace(":", "%3A")
+                .Replace("(", "%28")
+                .Replace(")", "%29");
         }
     }
 }

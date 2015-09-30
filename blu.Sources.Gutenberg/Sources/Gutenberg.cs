@@ -1,67 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using HtmlAgilityPack;
 using Blu.Enums;
-using System.ComponentModel.Composition;
+using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof(ILibrary))]
+    [Export(typeof (ILibrary))]
     public class Gutenberg : ILibrary
     {
-        private static readonly IList<Format> allowedFormats = new List<Format>
+        private const string Filename = "gutenberg-api.txt";
+
+        private static readonly IList<Format> AllowedFormats = new List<Format>
         {
-            Format.EBook,
+            Format.EBook
         };
 
-        private static readonly Object locker = new Object();
-
-        private readonly string filename = "gutenberg-api.txt";
-        private readonly string url = "https://www.gutenberg.org/ebooks/search/?query=[QUERY]";
-        private DateTime nextAccessTime;
+        private static readonly object Locker = new object();
+        private DateTime _nextAccessTime;
 
         public Gutenberg()
         {
-            if (!File.Exists(filename))
+            if (!File.Exists(Filename))
             {
-                File.Create(filename);
+                File.Create(Filename);
             }
 
-            using (var reader = new StreamReader(filename))
+            using (var reader = new StreamReader(Filename))
             {
-                string access = reader.ReadLine();
+                var access = reader.ReadLine();
 
-                if (!DateTime.TryParse(access, out nextAccessTime))
+                if (!DateTime.TryParse(access, out _nextAccessTime))
                 {
-                    nextAccessTime = DateTime.Now;
+                    _nextAccessTime = DateTime.Now;
                 }
             }
         }
 
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-        }
+        public string Url { get; } = "https://www.gutenberg.org/ebooks/search/?query=[QUERY]";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (!allowedFormats.Contains(format))
+            if (!AllowedFormats.Contains(format))
             {
                 yield break;
             }
 
-            lock (locker)
+            lock (Locker)
             {
-                DateTime now = DateTime.Now;
+                var now = DateTime.Now;
 
-                if (nextAccessTime > now)
+                if (_nextAccessTime > now)
                 {
                     Console.WriteLine("?");
                     yield break;
@@ -70,9 +63,9 @@ namespace Blu.Sources
                 var wc = new WebClient();
                 wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-                string query = BuildQuery(title, author);
+                var query = BuildQuery(title, author);
 
-                string lookupUrl = Url.Replace("[QUERY]", query);
+                var lookupUrl = Url.Replace("[QUERY]", query);
 
                 string response;
 
@@ -95,23 +88,27 @@ namespace Blu.Sources
 
                 UpdateAccessTime();
 
-                HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//ul[contains(concat(' ', normalize-space(@class), ' '), ' results ')]");
+                var childNodes =
+                    doc.DocumentNode.SelectNodes(
+                        "//ul[contains(concat(' ', normalize-space(@class), ' '), ' results ')]");
 
                 if (childNodes == null)
                 {
                     yield break;
                 }
 
-                foreach (HtmlNode element in childNodes)
+                foreach (var element in childNodes)
                 {
-                    HtmlNodeCollection valid = element.SelectNodes("li[contains(concat(' ', normalize-space(@class), ' '), ' booklink ')]");
+                    var valid =
+                        element.SelectNodes("li[contains(concat(' ', normalize-space(@class), ' '), ' booklink ')]");
 
                     if (valid == null || !valid.Any())
                     {
                         yield break;
                     }
 
-                    yield return valid.FirstOrDefault().InnerText;
+                    var firstOrDefault = valid.FirstOrDefault();
+                    if (firstOrDefault != null) yield return firstOrDefault.InnerText;
                 }
             }
         }
@@ -125,17 +122,17 @@ namespace Blu.Sources
 
         private void UpdateAccessTime(TimeSpan ts)
         {
-            if (!File.Exists(filename))
+            if (!File.Exists(Filename))
             {
-                File.Create(filename);
+                File.Create(Filename);
             }
 
-            using (var writer = new StreamWriter(filename))
+            using (var writer = new StreamWriter(Filename))
             {
-                DateTime date = DateTime.Now + ts;
+                var date = DateTime.Now + ts;
 
                 writer.WriteLine(date);
-                nextAccessTime = date;
+                _nextAccessTime = date;
             }
         }
 
@@ -143,17 +140,17 @@ namespace Blu.Sources
         {
             var sb = new StringBuilder();
 
-            sb.Append(String.Format("t.({0}) ", title));
+            sb.Append($"t.({title}) ");
 
-            sb.Append(String.Format("a.({0}) ", author));
+            sb.Append($"a.({author}) ");
 
-            sb.Append(String.Format("l.english"));
+            sb.Append("l.english");
 
             return sb.ToString()
-                     .Replace(" ", "%20")
-                     .Replace(":", "%3A")
-                     .Replace("(", "%28")
-                     .Replace(")", "%29");
+                .Replace(" ", "%20")
+                .Replace(":", "%3A")
+                .Replace("(", "%28")
+                .Replace(")", "%29");
         }
     }
 }

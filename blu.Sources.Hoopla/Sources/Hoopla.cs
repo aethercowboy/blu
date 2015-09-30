@@ -1,36 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
-using HtmlAgilityPack;
 using Blu.Enums;
-using System.ComponentModel.Composition;
+using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof(ILibrary))]
+    [Export(typeof (ILibrary))]
     internal class Hoopla : ILibrary
     {
-        private static readonly IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> AllowedFormats = new List<Format>
         {
             Format.DownloadableAudiobook,
             Format.EBook,
-            Format.EComic,
+            Format.EComic
         };
 
-        private readonly string url = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
-
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-        }
+        public string Url { get; } = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (!allowedFormats.Contains(format))
+            if (!AllowedFormats.Contains(format))
             {
                 yield break;
             }
@@ -38,41 +29,43 @@ namespace Blu.Sources
             var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            string query = BuildQuery(title, author);
-            string kind = GetKind(format);
+            var query = BuildQuery(title, author);
+            var kind = GetKind(format);
 
-            string lookupUrl = Url.Replace("[QUERY]", query)
-                                  .Replace("[KIND]", kind);
+            var lookupUrl = Url.Replace("[QUERY]", query)
+                .Replace("[KIND]", kind);
 
-            string response = wc.DownloadString(lookupUrl);
+            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 
             doc.LoadHtml(response);
 
-            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' row ')]");
+            var childNodes =
+                doc.DocumentNode.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' row ')]");
 
             if (childNodes == null)
             {
                 yield break;
             }
 
-            foreach (HtmlNode element in childNodes)
+            foreach (var element in childNodes)
             {
-                HtmlNodeCollection valid = element.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' columns ')]");
+                var valid = element.SelectNodes("div[contains(concat(' ', normalize-space(@class), ' '), ' columns ')]");
 
                 if (valid == null || !valid.Any())
                 {
                     yield break;
                 }
 
-                yield return valid.FirstOrDefault().InnerText;
+                var firstOrDefault = valid.FirstOrDefault();
+                if (firstOrDefault != null) yield return firstOrDefault.InnerText;
             }
         }
 
         public string BuildQuery(string title, string author)
         {
-            string retval = String.Join("+", title.Replace(" ", "+"), author);
+            var retval = string.Join("+", title.Replace(" ", "+"), author);
 
             return retval;
         }
@@ -88,7 +81,7 @@ namespace Blu.Sources
                 case Format.EComic:
                     return "COMIC";
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
     }

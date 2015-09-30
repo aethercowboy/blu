@@ -9,37 +9,29 @@ using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof(ILibrary))]
+    [Export(typeof (ILibrary))]
     public class Librivox : ILibrary
     {
-        private static readonly IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> AllowedFormats = new List<Format>
         {
-            Format.DownloadableAudiobook,
+            Format.DownloadableAudiobook
         };
 
-        private readonly string url = "https://librivox.org/api/feed/audiobooks?[QUERY]";
-
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-        }
+        public string Url { get; } = "https://librivox.org/api/feed/audiobooks?[QUERY]";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
             var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            if (!allowedFormats.Contains(format))
+            if (!AllowedFormats.Contains(format))
             {
                 yield break;
             }
 
-            string query = BuildQuery(title, author);
+            var query = BuildQuery(title, author);
 
-            string lookupUrl = Url.Replace("[QUERY]", query);
+            var lookupUrl = Url.Replace("[QUERY]", query);
 
             string response = null;
 
@@ -49,6 +41,7 @@ namespace Blu.Sources
             }
             catch (Exception)
             {
+                // ignored
             }
 
             if (response == null)
@@ -60,23 +53,24 @@ namespace Blu.Sources
 
             doc.LoadHtml(response);
 
-            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//books");
+            var childNodes = doc.DocumentNode.SelectNodes("//books");
 
             if (childNodes == null)
             {
                 yield break;
             }
 
-            foreach (HtmlNode element in childNodes)
+            foreach (var element in childNodes)
             {
-                HtmlNodeCollection valid = element.SelectNodes("book");
+                var valid = element.SelectNodes("book");
 
                 if (valid == null || !valid.Any())
                 {
                     yield break;
                 }
 
-                yield return valid.FirstOrDefault().InnerText;
+                var firstOrDefault = valid.FirstOrDefault();
+                if (firstOrDefault != null) yield return firstOrDefault.InnerText;
             }
         }
 
@@ -84,18 +78,18 @@ namespace Blu.Sources
         {
             var sb = new StringBuilder();
 
-            sb.Append(String.Format("title={0}", title.Replace(" ", "+")));
+            sb.Append($"title={title.Replace(" ", "+")}");
 
-            sb.Append(String.Format("&authors={0}", author.Replace(" ", "+")));
+            sb.Append($"&authors={author.Replace(" ", "+")}");
 
-            sb.Append(String.Format("&status=complete"));
-            sb.Append(String.Format("&recorded_language=1"));
+            sb.Append("&status=complete");
+            sb.Append("&recorded_language=1");
 
             return sb.ToString()
-                     .Replace(" ", "%20")
-                     .Replace(":", "%3A")
-                     .Replace("(", "%28")
-                     .Replace(")", "%29");
+                .Replace(" ", "%20")
+                .Replace(":", "%3A")
+                .Replace("(", "%28")
+                .Replace(")", "%29");
         }
     }
 }

@@ -8,3 +8,8 @@ Z:\Documents\Development\blu.Sources.Hoopla\bin\Debug\HtmlAgilityPack.pdb
 Z:\Documents\Development\blu.Sources.Hoopla\bin\Debug\HtmlAgilityPack.xml
 Z:\Documents\Development\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.dll
 Z:\Documents\Development\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.pdb
+Z:\Documents\Development\blu\bin\Debug\Plugins\blu.Sources.Hoopla.dll
+Z:\Documents\Development\blu\bin\Debug\Plugins\blu.Sources.Hoopla.pdb
+Z:\Documents\Development\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.csprojResolveAssemblyReference.cache
+Z:\Documents\Development\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.dll
+Z:\Documents\Development\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.pdb

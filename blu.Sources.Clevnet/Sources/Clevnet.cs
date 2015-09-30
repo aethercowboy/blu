@@ -1,38 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using HtmlAgilityPack;
 using Blu.Enums;
-using System.ComponentModel.Composition;
+using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof(ILibrary))]
+    [Export(typeof (ILibrary))]
     public class Clevnet : ILibrary
     {
-        private static readonly IList<Format> allowedFormats = new List<Format>
+        private static readonly IList<Format> AllowedFormats = new List<Format>
         {
             Format.AudiobookCD,
             Format.DownloadableAudiobook,
             Format.EBook,
-            Format.Print,
+            Format.Print
         };
 
-        private readonly string url = "http://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=false";
-
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-        }
+        public string Url { get; } =
+            "http://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=false";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
-            if (!allowedFormats.Contains(format))
+            if (!AllowedFormats.Contains(format))
             {
                 yield break;
             }
@@ -40,33 +33,35 @@ namespace Blu.Sources
             var wc = new WebClient();
             wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            string query = BuildQuery(title, author, format);
+            var query = BuildQuery(title, author, format);
 
-            string lookupUrl = Url.Replace("[QUERY]", query);
+            var lookupUrl = Url.Replace("[QUERY]", query);
 
-            string response = wc.DownloadString(lookupUrl);
+            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 
             doc.LoadHtml(response);
 
-            HtmlNodeCollection childNodes = doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' info ')]");
+            var childNodes =
+                doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' info ')]");
 
             if (childNodes == null)
             {
                 yield break;
             }
 
-            foreach (HtmlNode element in childNodes)
+            foreach (var element in childNodes)
             {
-                HtmlNodeCollection valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
+                var valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
 
                 if (valid == null || !valid.Any())
                 {
                     yield break;
                 }
 
-                yield return valid.FirstOrDefault().InnerText;
+                var firstOrDefault = valid.FirstOrDefault();
+                if (firstOrDefault != null) yield return firstOrDefault.InnerText;
             }
         }
 
@@ -74,15 +69,15 @@ namespace Blu.Sources
         {
             var sb = new StringBuilder();
 
-            sb.Append(String.Format("title:({0}) ", title));
+            sb.Append($"title:({title}) ");
 
             sb.Append("AND ");
 
-            sb.Append(String.Format("contributor:({0}) ", author));
+            sb.Append($"contributor:({author}) ");
 
             sb.Append("AND ");
 
-            string fmt = String.Empty;
+            var fmt = string.Empty;
 
             switch (format)
             {
@@ -98,17 +93,15 @@ namespace Blu.Sources
                 case Format.Print:
                     fmt = "BK";
                     break;
-                default:
+                case Format.EComic:
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
 
-            sb.Append(String.Format("formatcode:({0})", fmt));
+            sb.Append($"formatcode:({fmt})");
 
-            return sb.ToString()
-                     .Replace(" ", "%20")
-                     .Replace(":", "%3A")
-                     .Replace("(", "%28")
-                     .Replace(")", "%29");
+            return sb.ToString().Replace(" ", "%20").Replace(":", "%3A").Replace("(", "%28").Replace(")", "%29");
         }
     }
 }

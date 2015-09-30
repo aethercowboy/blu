@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu.Sources.HarrisCountyPub
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu.Sources.Librivox", "blu.Sources.Librivox\blu.Sources.Librivox.csproj", "{24B2A293-CE9D-4FA9-A950-4E93BBDDED68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bluTests", "bluTests\bluTests.csproj", "{460753E8-309A-42ED-95CF-D79D49BA1484}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{24B2A293-CE9D-4FA9-A950-4E93BBDDED68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24B2A293-CE9D-4FA9-A950-4E93BBDDED68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24B2A293-CE9D-4FA9-A950-4E93BBDDED68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{460753E8-309A-42ED-95CF-D79D49BA1484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{460753E8-309A-42ED-95CF-D79D49BA1484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{460753E8-309A-42ED-95CF-D79D49BA1484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{460753E8-309A-42ED-95CF-D79D49BA1484}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

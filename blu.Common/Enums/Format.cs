@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Blu.Enums
+﻿namespace Blu.Enums
 {
     public enum Format
     {
@@ -9,6 +6,6 @@ namespace Blu.Enums
         EBook,
         AudiobookCD,
         Print,
-        EComic,
+        EComic
     }
 }
