@@ -41,7 +41,7 @@ namespace Blu.Sources
             }
         }
 
-        public string Url { get; } = "https://www.gutenberg.org/ebooks/search/?query=[QUERY]";
+        public string Url { get; } = "http://www.gutenberg.org/ebooks/search/?query=[QUERY]";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
@@ -73,9 +73,9 @@ namespace Blu.Sources
                 {
                     response = wc.DownloadString(lookupUrl);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Gutenberg is blocking us. Let's wait a day.");
+                    Console.WriteLine($"Gutenberg is blocking us ({ex.Message}). Let's wait a day.");
                     var wait = new TimeSpan(24, 0, 0);
 
                     UpdateAccessTime(wait);
