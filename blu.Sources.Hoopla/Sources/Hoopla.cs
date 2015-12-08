@@ -7,14 +7,15 @@ using HtmlAgilityPack;
 
 namespace Blu.Sources
 {
-    [Export(typeof (ILibrary))]
+    [Export(typeof(ILibrary))]
     internal class Hoopla : ILibrary
     {
         private static readonly IList<Format> AllowedFormats = new List<Format>
         {
             Format.DownloadableAudiobook,
             Format.EBook,
-            Format.EComic
+            Format.EComic,
+            Format.EMusic
         };
 
         public string Url { get; } = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
@@ -70,7 +71,7 @@ namespace Blu.Sources
             return retval;
         }
 
-        private string GetKind(Format format)
+        private static string GetKind(Format format)
         {
             switch (format)
             {
@@ -80,6 +81,8 @@ namespace Blu.Sources
                     return "EBOOK";
                 case Format.EComic:
                     return "COMIC";
+                case Format.EMusic:
+                    return "MUSIC";
                 default:
                     return string.Empty;
             }

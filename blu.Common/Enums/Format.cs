@@ -6,6 +6,7 @@
         EBook,
         AudiobookCD,
         Print,
-        EComic
+        EComic,
+        EMusic
     }
 }

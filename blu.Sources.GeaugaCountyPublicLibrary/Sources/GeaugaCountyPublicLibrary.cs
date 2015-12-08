@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
@@ -16,7 +17,8 @@ namespace Blu.Sources
             Format.AudiobookCD,
             Format.DownloadableAudiobook,
             Format.EBook,
-            Format.Print
+            Format.Print,
+            Format.EMusic
         };
 
         public string Url { get; } =
@@ -89,15 +91,18 @@ namespace Blu.Sources
                 case Format.Print:
                     fmt = "a";
                     break;
+                case Format.EMusic:
+                    fmt = "w";
+                    break;
+                case Format.EComic:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
 
             sb.Append($"f:({fmt})");
 
-            return sb.ToString()
-                .Replace(" ", "%20")
-                .Replace(":", "%3A")
-                .Replace("(", "%28")
-                .Replace(")", "%29");
+            return sb.ToString().Replace(" ", "%20").Replace(":", "%3A").Replace("(", "%28").Replace(")", "%29");
         }
     }
 }

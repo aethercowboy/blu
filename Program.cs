@@ -77,6 +77,8 @@ namespace Blu
                     return "P";
                 case Format.EComic:
                     return "B";
+                case Format.EMusic:
+                    return "W";
                 default:
                     return "?";
             }
