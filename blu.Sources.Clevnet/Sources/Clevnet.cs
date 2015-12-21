@@ -21,7 +21,7 @@ namespace Blu.Sources
         };
 
         public string Url { get; } =
-            "http://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=false";
+            "https://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=true";
 
         public IEnumerable<string> Lookup(string title, string author, Format format)
         {
@@ -44,7 +44,7 @@ namespace Blu.Sources
             doc.LoadHtml(response);
 
             var childNodes =
-                doc.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' info ')]");
+                doc.DocumentNode.SelectNodes("//*[@id='bibList']");
 
             if (childNodes == null)
             {
@@ -53,7 +53,7 @@ namespace Blu.Sources
 
             foreach (var element in childNodes)
             {
-                var valid = element.SelectNodes("span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
+                var valid = element.SelectNodes("//span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
 
                 if (valid == null || !valid.Any())
                 {

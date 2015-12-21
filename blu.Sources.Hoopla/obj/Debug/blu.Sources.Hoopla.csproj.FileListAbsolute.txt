@@ -18,3 +18,8 @@ C:\Users\jacob\Documents\Visual Studio 2015\Projects\blu\bin\Debug\Plugins\blu.S
 C:\Users\jacob\Documents\Visual Studio 2015\Projects\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.csprojResolveAssemblyReference.cache
 C:\Users\jacob\Documents\Visual Studio 2015\Projects\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.dll
 C:\Users\jacob\Documents\Visual Studio 2015\Projects\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.pdb
+C:\Users\jacob\Documents\GitHubVisualStudio\blu\bin\Debug\Plugins\blu.Sources.Hoopla.dll
+C:\Users\jacob\Documents\GitHubVisualStudio\blu\bin\Debug\Plugins\blu.Sources.Hoopla.pdb
+C:\Users\jacob\Documents\GitHubVisualStudio\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.csprojResolveAssemblyReference.cache
+C:\Users\jacob\Documents\GitHubVisualStudio\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.dll
+C:\Users\jacob\Documents\GitHubVisualStudio\blu\blu.Sources.Hoopla\obj\Debug\blu.Sources.Hoopla.pdb
