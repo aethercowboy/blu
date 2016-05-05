@@ -13,12 +13,12 @@ namespace Blu
     {
         private static void Main(string[] args)
         {
-            //args = new string[] { "oliver", "twist", "dickens" };
+            //args = new[] { "oliver", "twist", "dickens" };
             var title = string.Join(" ", args.Take(args.Length - 1));
             var author = args.Last();
 
-            Console.WriteLine("Title: {0}", title);
-            Console.WriteLine("Author: {0}", author);
+            Console.WriteLine($"Title: {title}");
+            Console.WriteLine($"Author: {author}");
             Console.WriteLine("========================================");
 
             var blueEngine = new BlueEngine();
