@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Enums\Format.cs" />
     <Compile Include="Enums\UserAgent.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\ILibrary.cs" />
   </ItemGroup>

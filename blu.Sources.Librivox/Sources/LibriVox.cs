@@ -4,44 +4,45 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Blu.Enums;
+using blu.Common.Enums;
+using blu.Common.Extensions;
+using blu.Common.Sources;
 using HtmlAgilityPack;
 
-namespace Blu.Sources
+namespace blu.Sources.Librivox.Sources
 {
-    [Export(typeof (ILibrary))]
-    public class Librivox : ILibrary
+    [Export(typeof(ILibrary))]
+    public class Librivox : Library
     {
-        private static readonly IList<Format> AllowedFormats = new List<Format>
+        protected  override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook
         };
 
-        public string Url { get; } = "https://librivox.org/api/feed/audiobooks?[QUERY]";
+        private string Url { get; } = "https://librivox.org/api/feed/audiobooks?[QUERY]";
 
-        public IEnumerable<string> Lookup(string title, string author, Format format)
+        protected override IEnumerable<string> SourceLookup(string title, string author, Format format)
         {
-            var wc = new WebClient();
-            wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
+            string response;
 
-            if (!AllowedFormats.Contains(format))
+            using (var wc = new WebClient())
             {
-                yield break;
-            }
+                wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-            var query = BuildQuery(title, author);
+                var query = BuildQuery(title, author);
 
-            var lookupUrl = Url.Replace("[QUERY]", query);
+                var lookupUrl = Url.Replace("[QUERY]", query);
 
-            string response = null;
+                response = null;
 
-            try
-            {
-                response = wc.DownloadString(lookupUrl);
-            }
-            catch (Exception)
-            {
-                // ignored
+                try
+                {
+                    response = wc.DownloadString(lookupUrl);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
 
             if (response == null)
@@ -85,11 +86,7 @@ namespace Blu.Sources
             sb.Append("&status=complete");
             sb.Append("&recorded_language=1");
 
-            return sb.ToString()
-                .Replace(" ", "%20")
-                .Replace(":", "%3A")
-                .Replace("(", "%28")
-                .Replace(")", "%29");
+            return sb.ToString().UrlEscape();
         }
     }
 }

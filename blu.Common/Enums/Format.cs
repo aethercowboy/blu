@@ -1,10 +1,10 @@
-﻿namespace Blu.Enums
+﻿namespace blu.Common.Enums
 {
     public enum Format
     {
         DownloadableAudiobook,
         EBook,
-        AudiobookCD,
+        AudiobookCd,
         Print,
         EComic,
         EMusic

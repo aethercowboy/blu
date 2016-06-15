@@ -5,17 +5,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Blu.Enums;
+using blu.Common.Enums;
+using blu.Common.Extensions;
+using blu.Common.Sources;
 using HtmlAgilityPack;
 
-namespace Blu.Sources
+namespace blu.Sources.Gutenberg.Sources
 {
     [Export(typeof (ILibrary))]
-    public class Gutenberg : ILibrary
+    public class Gutenberg : Library
     {
         private const string Filename = "gutenberg-api.txt";
 
-        private static readonly IList<Format> AllowedFormats = new List<Format>
+        protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.EBook
         };
@@ -41,15 +43,10 @@ namespace Blu.Sources
             }
         }
 
-        public string Url { get; } = "http://www.gutenberg.org/ebooks/search/?query=[QUERY]";
+        private string Url { get; } = "http://www.gutenberg.org/ebooks/search/?query=[QUERY]";
 
-        public IEnumerable<string> Lookup(string title, string author, Format format)
+        protected override IEnumerable<string> SourceLookup(string title, string author, Format format)
         {
-            if (!AllowedFormats.Contains(format))
-            {
-                yield break;
-            }
-
             lock (Locker)
             {
                 var now = DateTime.Now;
@@ -60,26 +57,28 @@ namespace Blu.Sources
                     yield break;
                 }
 
-                var wc = new WebClient();
-                wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
-
-                var query = BuildQuery(title, author);
-
-                var lookupUrl = Url.Replace("[QUERY]", query);
-
                 string response;
 
-                try
+                using (var wc = new WebClient())
                 {
-                    response = wc.DownloadString(lookupUrl);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Gutenberg is blocking us ({ex.Message}). Let's wait a day.");
-                    var wait = new TimeSpan(24, 0, 0);
+                    wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
 
-                    UpdateAccessTime(wait);
-                    yield break;
+                    var query = BuildQuery(title, author);
+
+                    var lookupUrl = Url.Replace("[QUERY]", query);
+
+                    try
+                    {
+                        response = wc.DownloadString(lookupUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Gutenberg is blocking us ({ex.Message}). Let's wait a day.");
+                        var wait = new TimeSpan(24, 0, 0);
+
+                        UpdateAccessTime(wait);
+                        yield break;
+                    }
                 }
 
                 var doc = new HtmlDocument();
@@ -146,11 +145,7 @@ namespace Blu.Sources
 
             sb.Append("l.english");
 
-            return sb.ToString()
-                .Replace(" ", "%20")
-                .Replace(":", "%3A")
-                .Replace("(", "%28")
-                .Replace(")", "%29");
+            return sb.ToString().UrlEscape();
         }
     }
 }

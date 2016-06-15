@@ -4,41 +4,41 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Blu.Enums;
+using blu.Common.Enums;
+using blu.Common.Extensions;
+using blu.Common.Sources;
 using HtmlAgilityPack;
 
-namespace Blu.Sources
+namespace blu.Sources.GeaugaCountyPublicLibrary.Sources
 {
     [Export(typeof (ILibrary))]
-    public class GeaugaCountyPublicLibrary : ILibrary
+    public class GeaugaCountyPublicLibrary : Library
     {
-        private static readonly IList<Format> AllowedFormats = new List<Format>
+        protected override IList<Format> AllowedFormats => new List<Format>
         {
-            Format.AudiobookCD,
+            Format.AudiobookCd,
             Format.DownloadableAudiobook,
             Format.EBook,
             Format.Print,
             Format.EMusic
         };
 
-        public string Url { get; } =
+        private string Url { get; } =
             "http://geapl-mt.iii.com/iii/encore/search/C__S[QUERY]__Orightresult__U?lang=eng&suite=cobalt";
 
-        public IEnumerable<string> Lookup(string title, string author, Format format)
+        protected override IEnumerable<string> SourceLookup(string title, string author, Format format)
         {
-            if (!AllowedFormats.Contains(format))
+            string response;
+
+            using (var wc = new WebClient())
             {
-                yield break;
+                wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
+                var query = BuildQuery(title, author, format);
+
+                var lookupUrl = Url.Replace("[QUERY]", query);
+
+                response = wc.DownloadString(lookupUrl);
             }
-
-            var wc = new WebClient();
-            wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
-
-            var query = BuildQuery(title, author, format);
-
-            var lookupUrl = Url.Replace("[QUERY]", query);
-
-            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 
@@ -85,7 +85,7 @@ namespace Blu.Sources
                 case Format.EBook:
                     fmt = "z";
                     break;
-                case Format.AudiobookCD:
+                case Format.AudiobookCd:
                     fmt = "i";
                     break;
                 case Format.Print:
@@ -102,7 +102,7 @@ namespace Blu.Sources
 
             sb.Append($"f:({fmt})");
 
-            return sb.ToString().Replace(" ", "%20").Replace(":", "%3A").Replace("(", "%28").Replace(")", "%29");
+            return sb.ToString().UrlEscape();
         }
     }
 }

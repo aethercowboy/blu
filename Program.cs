@@ -3,11 +3,11 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
-using Blu.Enums;
-using Blu.Extensions;
-using Blu.Sources;
+using blu.Common.Enums;
+using blu.Common.Sources;
+using blu.Extensions;
 
-namespace Blu
+namespace blu
 {
     internal static class Program
     {
@@ -71,7 +71,7 @@ namespace Blu
                     return "A";
                 case Format.EBook:
                     return "E";
-                case Format.AudiobookCD:
+                case Format.AudiobookCd:
                     return "C";
                 case Format.Print:
                     return "P";

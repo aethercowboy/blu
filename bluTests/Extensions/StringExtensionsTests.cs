@@ -1,7 +1,7 @@
-﻿using System;
+﻿using blu.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Blu.Extensions.Tests
+namespace bluTests.Extensions
 {
     [TestClass]
     public class StringExtensionsTests
@@ -9,9 +9,7 @@ namespace Blu.Extensions.Tests
         [TestMethod]
         public void UnCamelCaseTest_TestForNull()
         {
-            String str = null;
-
-            var result = str.UnCamelCase();
+            var result = ((string) null).UnCamelCase();
 
             Assert.IsNull(result);
         }
@@ -20,17 +18,17 @@ namespace Blu.Extensions.Tests
         [TestMethod]
         public void UnCamelCaseTest_TestForEmpty()
         {
-            String str = String.Empty;
+            var str = string.Empty;
 
             var result = str.UnCamelCase();
 
-            Assert.AreEqual(String.Empty, result);
+            Assert.AreEqual(string.Empty, result);
         }
 
         [TestMethod]
         public void UnCamelCaseTest_Simple()
         {
-            String str = "Simple";
+            const string str = "Simple";
 
             var result = str.UnCamelCase();
 
@@ -40,7 +38,7 @@ namespace Blu.Extensions.Tests
         [TestMethod]
         public void UnCamelCaseTest_simple()
         {
-            String str = "simple";
+            const string str = "simple";
 
             var result = str.UnCamelCase();
 
@@ -50,7 +48,7 @@ namespace Blu.Extensions.Tests
         [TestMethod]
         public void UnCamelCaseTest_TwoWords()
         {
-            String str = "TwoWords";
+            const string str = "TwoWords";
 
             var result = str.UnCamelCase();
 
@@ -60,7 +58,7 @@ namespace Blu.Extensions.Tests
         [TestMethod]
         public void UnCamelCaseTest_ThreeWords()
         {
-            String str = "ThreeMoreWords";
+            const string str = "ThreeMoreWords";
 
             var result = str.UnCamelCase();
 

@@ -3,37 +3,37 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Blu.Enums;
+using blu.Common.Enums;
+using blu.Common.Sources;
 using HtmlAgilityPack;
 
-namespace Blu.Sources
+namespace blu.Sources.HarrisCountyPublicLibrary.Sources
 {
     [Export(typeof (ILibrary))]
-    public class HarrisCountyPublicLibrary : ILibrary
+    public class HarrisCountyPublicLibrary : Library
     {
-        private static readonly IList<Format> AllowedFormats = new List<Format>
+        protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook,
             Format.EBook
         };
 
-        public string Url { get; } = "http://hcpl.ent.sirsi.net/client/webcat/search/results?qu=[QUERY]";
+        private string Url { get; } = "http://hcpl.ent.sirsi.net/client/webcat/search/results?qu=[QUERY]";
 
-        public IEnumerable<string> Lookup(string title, string author, Format format)
+        protected override IEnumerable<string> SourceLookup(string title, string author, Format format)
         {
-            if (!AllowedFormats.Contains(format))
+            string response;
+
+            using (var wc = new WebClient())
             {
-                yield break;
+                wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
+
+                var query = BuildQuery(title, author, format);
+
+                var lookupUrl = Url.Replace("[QUERY]", query);
+
+                response = wc.DownloadString(lookupUrl);
             }
-
-            var wc = new WebClient();
-            wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
-
-            var query = BuildQuery(title, author, format);
-
-            var lookupUrl = Url.Replace("[QUERY]", query);
-
-            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 

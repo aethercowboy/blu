@@ -2,15 +2,16 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
-using Blu.Enums;
+using blu.Common.Enums;
+using blu.Common.Sources;
 using HtmlAgilityPack;
 
-namespace Blu.Sources
+namespace blu.Sources.Hoopla.Sources
 {
     [Export(typeof(ILibrary))]
-    internal class Hoopla : ILibrary
+    internal class Hoopla : Library
     {
-        private static readonly IList<Format> AllowedFormats = new List<Format>
+        protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook,
             Format.EBook,
@@ -18,25 +19,24 @@ namespace Blu.Sources
             Format.EMusic
         };
 
-        public string Url { get; } = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
+        private string Url { get; } = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
 
-        public IEnumerable<string> Lookup(string title, string author, Format format)
+        protected override IEnumerable<string> SourceLookup(string title, string author, Format format)
         {
-            if (!AllowedFormats.Contains(format))
+            string response;
+
+            using (var wc = new WebClient())
             {
-                yield break;
+                wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
+
+                var query = BuildQuery(title, author);
+                var kind = GetKind(format);
+
+                var lookupUrl = Url.Replace("[QUERY]", query)
+                    .Replace("[KIND]", kind);
+
+                response = wc.DownloadString(lookupUrl);
             }
-
-            var wc = new WebClient();
-            wc.Headers.Add("user-agent", UserAgent.GoogleChrome);
-
-            var query = BuildQuery(title, author);
-            var kind = GetKind(format);
-
-            var lookupUrl = Url.Replace("[QUERY]", query)
-                .Replace("[KIND]", kind);
-
-            var response = wc.DownloadString(lookupUrl);
 
             var doc = new HtmlDocument();
 

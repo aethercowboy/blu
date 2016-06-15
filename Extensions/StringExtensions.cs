@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Blu.Extensions
+namespace blu.Extensions
 {
     public static class StringExtensions
     {
@@ -8,7 +8,7 @@ namespace Blu.Extensions
         {
             if (str == null)
             {
-                return str;
+                return null;
             }
 
             var pattern = new Regex(@"([a-z])([A-Z])");

@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Blu.Sources;
+using blu.Common.Sources;
 
-namespace Blu
+namespace blu
 {
     public class BlueEngine
     {
-        [ImportMany(typeof (ILibrary))]
-        public IEnumerable<ILibrary> Libraries { get; set; }
+        public BlueEngine()
+        {
+            Libraries = new List<ILibrary>();
+        }
+
+        [ImportMany(typeof(ILibrary))]
+        public IEnumerable<ILibrary> Libraries { get; private set; }
     }
 }
