@@ -11,7 +11,7 @@ using HtmlAgilityPack;
 
 namespace blu.Sources.Clevnet.Sources
 {
-    [Export(typeof (ILibrary))]
+    [Export(typeof(ILibrary))]
     public class Clevnet : Library
     {
         protected override IList<Format> AllowedFormats => new List<Format>
@@ -23,7 +23,8 @@ namespace blu.Sources.Clevnet.Sources
         };
 
         private string Url { get; } =
-            "https://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=true";
+            //"https://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=true";
+            "https://search.clevnet.org/client/en_US/clevnet/search/results?[QUERY]";
 
         protected override IEnumerable<string> SourceLookup(string title, string author, Format format)
         {
@@ -45,16 +46,40 @@ namespace blu.Sources.Clevnet.Sources
             doc.LoadHtml(response);
 
             var childNodes =
-                doc.DocumentNode.SelectNodes("//*[@id='bibList']");
+                doc.DocumentNode.SelectNodes("//*[@id='results_wrapper']");
 
             if (childNodes == null)
             {
-                yield break;
+                childNodes =
+                    doc.DocumentNode.SelectNodes(
+                        "//*[contains(concat(' ', normalize-space(@class), ' '), ' detail_main ')]");
+
+                if (childNodes == null)
+                {
+                    yield break;
+                }
+                else
+                {
+                    foreach (var element in childNodes)
+                    {
+                        var valid =
+                            element.SelectNodes(
+                                "//div[contains(concat(' ', normalize-space(@class), ' '), ' displayElementText TITLE ')]");
+
+                        if (valid == null || !valid.Any())
+                        {
+                            yield break;
+                        }
+
+                        var firstOrDefault = valid.FirstOrDefault();
+                        if (firstOrDefault != null) yield return firstOrDefault.InnerText;
+                    }
+                }
             }
 
             foreach (var element in childNodes)
             {
-                var valid = element.SelectNodes("//span[contains(concat(' ', normalize-space(@class), ' '), ' title ')]");
+                var valid = element.SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' results_cell ')]");
 
                 if (valid == null || !valid.Any())
                 {
@@ -68,31 +93,23 @@ namespace blu.Sources.Clevnet.Sources
 
         private string BuildQuery(string title, string author, Format format)
         {
-            var sb = new StringBuilder();
-
-            sb.Append($"title:({title}) ");
-
-            sb.Append("AND ");
-
-            sb.Append($"contributor:({author}) ");
-
-            sb.Append("AND ");
+            var parts = new List<string> {$"qu=TITLE%3D{title}", $"qu=AUTHOR%3D{author}"};
 
             var fmt = string.Empty;
 
             switch (format)
             {
                 case Format.DownloadableAudiobook:
-                    fmt = "AB";
+                    fmt = "EAUDIOBOOKS";
                     break;
                 case Format.EBook:
-                    fmt = "EBOOK";
+                    fmt = "E-BOOKS";
                     break;
                 case Format.AudiobookCd:
-                    fmt = "BOOK_CD";
+                    fmt = "AUDIOBOOKS";
                     break;
                 case Format.Print:
-                    fmt = "BK";
+                    fmt = "BOOK";
                     break;
                 case Format.EComic:
                     break;
@@ -100,9 +117,9 @@ namespace blu.Sources.Clevnet.Sources
                     throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
 
-            sb.Append($"formatcode:({fmt})");
+            parts.Add($"lm={fmt}");
 
-            return sb.ToString().UrlEscape();
+            return string.Join("&", parts).UrlEscape();
         }
     }
 }
