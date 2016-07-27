@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu", "blu.csproj", "{FA9437DA-4CC4-42F9-86E9-A5C55B3A3C7C}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu.Sources.Librivox", "blu.Sources.Librivox\blu.Sources.Librivox.csproj", "{24B2A293-CE9D-4FA9-A950-4E93BBDDED68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bluTests", "bluTests\bluTests.csproj", "{460753E8-309A-42ED-95CF-D79D49BA1484}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu.Sources.ArchiveOrg", "blu.Sources.ArchiveOrg\blu.Sources.ArchiveOrg.csproj", "{ABF8B796-46FE-45A1-89EF-2E876F899021}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +72,10 @@ Global
 		{460753E8-309A-42ED-95CF-D79D49BA1484}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{460753E8-309A-42ED-95CF-D79D49BA1484}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{460753E8-309A-42ED-95CF-D79D49BA1484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABF8B796-46FE-45A1-89EF-2E876F899021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABF8B796-46FE-45A1-89EF-2E876F899021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABF8B796-46FE-45A1-89EF-2E876F899021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABF8B796-46FE-45A1-89EF-2E876F899021}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
