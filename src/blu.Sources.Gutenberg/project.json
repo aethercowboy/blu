@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "blu.Common": "1.0.0-*",
+    "NETStandard.Library": "1.6.0",
+    "System.IO.FileSystem":  "4.0.1"  
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ]
+    }
+  }
+}

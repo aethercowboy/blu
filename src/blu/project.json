@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "define": []
+  },
+
+  "dependencies": {
+    "blu.Common": "1.0.0-*",
+    "blu.Sources.ArchiveOrg": "1.0.0-*",
+    "blu.Sources.Clevnet": "1.0.0-*",
+    "blu.Sources.GeaugaCountyPublicLibrary": "1.0.0-*",
+    "blu.Sources.Gutenberg": "1.0.0-*",
+    "blu.Sources.HarrisCountyPublicLibrary": "1.0.0-*",
+    "blu.Sources.Hoopla": "1.0.0-*",
+    "blu.Sources.Librivox": "1.0.0-*",
+    "Microsoft.Composition": "1.0.30",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    },
+    "System.Runtime.Loader": "4.0.0"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ]
+    }
+  }
+}

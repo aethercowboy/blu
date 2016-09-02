@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "blu.Common": "1.0.0-*",
+    "HtmlAgilityPack": "1.4.9.5",
+    "NETStandard.Library": "1.6.0",
+    "System.Linq": "4.1.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ]
+    }
+  }
+}
