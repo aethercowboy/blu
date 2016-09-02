@@ -13,7 +13,8 @@ namespace blu.Sources.ArchiveOrg.Sources
     {
         protected override IList<Format> AllowedFormats => new List<Format>
         {
-            Format.EBook
+            Format.EBook,
+            Format.DownloadableAudiobook
         };
 
         private const string Url = "https://archive.org/advancedsearch.php?q=[QUERY]&output=json";
@@ -54,6 +55,9 @@ namespace blu.Sources.ArchiveOrg.Sources
             {
                 case Format.EBook:
                     fmt = "texts";
+                    break;
+                case Format.DownloadableAudiobook:
+                    fmt = "audio";
                     break;
             }
 
