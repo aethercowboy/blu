@@ -17,7 +17,7 @@ namespace blu
     {
         public static void Main(string[] args)
         {
-            args = new[] { "oliver", "twist", "dickens" };
+            //args = new[] { "oliver", "twist", "dickens" };
             var title = string.Join(" ", args.Take(args.Length - 1));
             var author = args.Last();
 
