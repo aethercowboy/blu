@@ -15,10 +15,7 @@
     "blu.Sources.Hoopla": "1.0.0-*",
     "blu.Sources.Librivox": "1.0.0-*",
     "Microsoft.Composition": "1.0.30",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    },
+    "Microsoft.NETCore.App": "1.0.1",
     "System.Runtime.Loader": "4.0.0"
   },
 
@@ -26,5 +23,9 @@
     "netcoreapp1.0": {
       "imports": [ "dnxcore50", "portable-net45+win8" ]
     }
+  },
+
+  "runtimes": {
+    "win10-x64" :  {} 
   }
 }

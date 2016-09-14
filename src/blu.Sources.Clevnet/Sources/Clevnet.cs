@@ -20,9 +20,7 @@ namespace blu.Sources.Clevnet.Sources
             Format.Print
         };
 
-        private string Url { get; } =
-            //"https://clevnet.bibliocommons.com/search?custom_query=[QUERY]&suppress=true&custom_edit=true";
-            "https://search.clevnet.org/client/en_US/clevnet/search/results?[QUERY]";
+        private string Url { get; } = "https://search.clevnet.org/client/en_US/clevnet/search/results?[QUERY]";
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {

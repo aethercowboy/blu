@@ -54,8 +54,6 @@ namespace blu.Sources.ArchiveOrg.Sources
             }
         }
 
-        //https://archive.org/advancedsearch.php?q=title%3A%28fiscal%20wonderland%29%20AND%20creator%3A%28geake%29%20AND%20mediatype%3A%28texts%29&output=json
-
         private static string BuildQuery(string title, string author, Format format)
         {
             var parts = new List<string> { $"title:({title})", $"creator:({author})" };

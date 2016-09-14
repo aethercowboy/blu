@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using blu.Common.Enums;
 using blu.Common.Sources;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace blu.Sources.Hoopla.Sources
 {
@@ -18,11 +20,11 @@ namespace blu.Sources.Hoopla.Sources
             Format.EMusic
         };
 
-        private string Url { get; } = "https://www.hoopladigital.com/search?results=&q=[QUERY]&kind=[KIND]";
+        private string Url { get; } = "https://hoopla-ws.hoopladigital.com/search?q=[QUERY]&kind=[KIND]";
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {
-            string response;
+            JObject result;
 
             using (var wc = new HttpClient())
             {
@@ -34,35 +36,15 @@ namespace blu.Sources.Hoopla.Sources
                 var lookupUrl = Url.Replace("[QUERY]", query)
                     .Replace("[KIND]", kind);
 
-                response = await wc.GetStringAsync(lookupUrl);
+                var json = await wc.GetStringAsync(lookupUrl);
+                result = JObject.Parse(json);
             }
-
-            var doc = new HtmlDocument();
-
-            doc.LoadHtml(response);
-
-            var childNodes =
-                doc.DocumentNode.Descendants("div").Where(x => HtmlNodeHasClass(x, "row")).ToList();
 
             var results = new List<string>();
 
-            if (childNodes == null)
-            {
-                return results;
-            }
+            if (result == null || !result["titles"].Any()) return results;
 
-            foreach (var element in childNodes)
-            {
-                var valid = element.Descendants("div").Where(x => HtmlNodeHasClass(x, "columns")).ToList();
-
-                if (valid == null || !valid.Any())
-                {
-                    return results;
-                }
-
-                var firstOrDefault = valid.FirstOrDefault();
-                if (firstOrDefault != null) results.Add(firstOrDefault.InnerText);
-            }
+            results.AddRange(result["titles"].Select(doc => doc["title"].ToString()));
 
             return results;
         }
