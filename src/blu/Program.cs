@@ -28,7 +28,7 @@ namespace blu
             var conventions = new ConventionBuilder();
             conventions.ForTypesDerivedFrom<ILibrary>().Export<ILibrary>().Shared();
 
-            var assemblies = new[] { Assembly.GetEntryAssembly() };
+            var assemblies = new[] {Assembly.GetEntryAssembly()};
             var currentDirectory = Directory.GetCurrentDirectory();
             var assembliesFromDirectory =
                 Directory.GetFiles(currentDirectory, "blu.Sources.*.dll", SearchOption.AllDirectories)
@@ -44,7 +44,7 @@ namespace blu
             {
                 var plugins = container.GetExports<ILibrary>();
 
-                foreach (var plugin in plugins)
+                foreach (var plugin in plugins.GroupBy(x => x.GetType()).Select(x => x.FirstOrDefault()))
                 {
                     try
                     {
