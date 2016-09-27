@@ -48,17 +48,12 @@ namespace blu.Sources.HarrisCountyPublicLibrary.Sources
                 return results;
             }
 
-            foreach (
-                var firstOrDefault in
-                childNodes.Select(
-                        element =>
-                                element.Descendants("div").Where(x => HtmlNodeHasClass(x, "results_bio")))
+            results.AddRange(
+                childNodes.Select(element => element.Descendants("div").Where(x => HtmlNodeHasClass(x, "results_bio")))
                     .TakeWhile(valid => valid != null && valid.Any())
                     .Select(valid => valid.FirstOrDefault())
-                    .Where(firstOrDefault => firstOrDefault != null))
-            {
-                results.Add(firstOrDefault.InnerText);
-            }
+                    .Where(firstOrDefault => firstOrDefault != null)
+                    .Select(firstOrDefault => firstOrDefault.InnerText));
 
             return results;
         }

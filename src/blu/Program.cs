@@ -10,16 +10,40 @@ using blu.Common.Enums;
 using blu.Common.Sources;
 using System.Reflection;
 using blu.Extensions;
+using Newtonsoft.Json;
 
 namespace blu
 {
     public class Program
     {
+        private static string skipFile = "skips.json";
+
         public static void Main(string[] args)
         {
             //args = new[] { "oliver", "twist", "dickens" };
             var title = string.Join(" ", args.Take(args.Length - 1));
             var author = args.Last();
+            var now = DateTime.Now;
+            Dictionary<string, DateTime> skips;
+
+            if (File.Exists(skipFile))
+            {
+                var skipText = File.ReadAllText(skipFile);
+
+                skips = JsonConvert.DeserializeObject<Dictionary<string, DateTime>>(skipText);
+            }
+            else
+            {
+                skips = new Dictionary<string, DateTime>();
+            }
+
+            foreach (var skip in skips)
+            {
+                if (skip.Value < now)
+                {
+                    skips.Remove(skip.Key);
+                }
+            }
 
             Console.WriteLine($"Title: {title}");
             Console.WriteLine($"Author: {author}");
@@ -46,11 +70,18 @@ namespace blu
 
                 foreach (var plugin in plugins.GroupBy(x => x.GetType()).Select(x => x.FirstOrDefault()))
                 {
+                    var t = plugin.GetType();
+                    var name = t.ToString().Split('.').Last();
+
+                    if (skips.ContainsKey(name))
+                    {
+                        Console.WriteLine("Skipping for now...");
+                        continue;
+                    }
+
                     try
                     {
-                        var t = plugin.GetType();
-
-                        Console.WriteLine(t.ToString().Split('.').Last().UnCamelCase());
+                        Console.WriteLine(name.UnCamelCase());
                         var value = LibraryResponse(plugin, title, author);
                         Console.WriteLine(value.Result);
                         Console.WriteLine();
@@ -58,9 +89,15 @@ namespace blu
                     catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
+                        skips.Remove(name);
+                        skips.Add(name, now.AddHours(1));
                     }
                 }
             }
+
+            var skipOut = JsonConvert.SerializeObject(skips);
+
+            File.WriteAllText(skipFile, skipOut);
         }
 
         private static async Task<string> LibraryResponse(ILibrary library, string title, string author)
