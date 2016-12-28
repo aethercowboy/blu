@@ -14,10 +14,12 @@ using Newtonsoft.Json;
 
 namespace blu
 {
+    // ReSharper disable once UnusedMember.Global
     public class Program
     {
-        private static string skipFile = "skips.json";
+        private const string SkipFile = "skips.json";
 
+        // ReSharper disable once UnusedMember.Global
         public static void Main(string[] args)
         {
             //args = new[] { "oliver", "twist", "dickens" };
@@ -26,9 +28,9 @@ namespace blu
             var now = DateTime.Now;
             Dictionary<string, DateTime> skips;
 
-            if (File.Exists(skipFile))
+            if (File.Exists(SkipFile))
             {
-                var skipText = File.ReadAllText(skipFile);
+                var skipText = File.ReadAllText(SkipFile);
 
                 skips = JsonConvert.DeserializeObject<Dictionary<string, DateTime>>(skipText);
             }
@@ -37,7 +39,7 @@ namespace blu
                 skips = new Dictionary<string, DateTime>();
             }
 
-            foreach (var skip in skips)
+            foreach (var skip in skips.ToList())
             {
                 if (skip.Value < now)
                 {
@@ -97,13 +99,13 @@ namespace blu
 
             var skipOut = JsonConvert.SerializeObject(skips);
 
-            File.WriteAllText(skipFile, skipOut);
+            File.WriteAllText(SkipFile, skipOut);
         }
 
         private static async Task<string> LibraryResponse(ILibrary library, string title, string author)
         {
             var values = new List<string>();
-            foreach (var fmt in (Format[])Enum.GetValues(typeof(Format)))
+            foreach (var fmt in (Format[]) Enum.GetValues(typeof(Format)))
             {
                 var entries = (await library.Lookup(title, author, fmt)).Where(x => x.ToLower().Contains(title));
                 if (entries.Any()) values.Add(GetCode(fmt));

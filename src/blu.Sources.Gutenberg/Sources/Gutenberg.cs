@@ -9,20 +9,22 @@ using blu.Common.Enums;
 using blu.Common.Sources;
 using HtmlAgilityPack;
 using System.Linq;
+using System.Threading;
 using blu.Common.Extensions;
 
 namespace blu.Sources.Gutenberg.Sources
 {
+    // ReSharper disable once UnusedMember.Global
     public class Gutenberg : Library
     {
         private const string Filename = "gutenberg-api.txt";
+        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.EBook
         };
 
-        private static readonly object Locker = new object();
         private DateTime _nextAccessTime;
 
         public Gutenberg()
@@ -41,11 +43,12 @@ namespace blu.Sources.Gutenberg.Sources
             }
         }
 
-        private string Url { get; } = "http://www.gutenberg.org/ebooks/search/?query=[QUERY]";
+        private string Url { get; } = "https://www.gutenberg.org/ebooks/search/?query=[QUERY]";
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {
-            lock (Locker)
+            await _semaphoreSlim.WaitAsync();
+            try
             {
                 var now = DateTime.Now;
 
@@ -69,7 +72,7 @@ namespace blu.Sources.Gutenberg.Sources
 
                     try
                     {
-                        response = wc.GetStringAsync(lookupUrl).Result;
+                        response = await wc.GetStringAsync(lookupUrl);
                     }
                     catch (Exception ex)
                     {
@@ -111,6 +114,11 @@ namespace blu.Sources.Gutenberg.Sources
 
                 return results;
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         private void UpdateAccessTime()
@@ -138,9 +146,19 @@ namespace blu.Sources.Gutenberg.Sources
         {
             var sb = new StringBuilder();
 
-            sb.Append($"t.({title}) ");
+            var titleParts = title.Split(' ');
 
-            sb.Append($"a.({author}) ");
+            foreach (var part in titleParts)
+            {
+                sb.Append($"t.{part}+");
+            }
+
+            var authorParts = author.Split(' ');
+
+            foreach (var part in authorParts)
+            {
+                sb.Append($"a.{part}+");
+            }
 
             sb.Append("l.english");
 

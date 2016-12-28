@@ -1,9 +1,9 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "HtmlAgilityPack": "1.4.9.5"
+    "HtmlAgilityPack": "1.4.9.5",
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
