@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using blu.Common.Enums;
 using blu.Common.Sources;
-using HtmlAgilityPack;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace blu.Sources.Hoopla.Sources
@@ -24,29 +23,40 @@ namespace blu.Sources.Hoopla.Sources
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {
-            JObject result;
-
-            using (var wc = new HttpClient())
+            try
             {
-                wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
+                JObject result;
 
-                var query = BuildQuery(title);
-                var kind = GetKind(format);
+                using (var wc = new HttpClient())
+                {
+                    wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
 
-                var lookupUrl = Url.Replace("[QUERY]", query)
-                    .Replace("[KIND]", kind);
+                    var query = BuildQuery(title);
+                    var kind = GetKind(format);
 
-                var json = await wc.GetStringAsync(lookupUrl);
-                result = JObject.Parse(json);
+                    var lookupUrl = Url.Replace("[QUERY]", query)
+                        .Replace("[KIND]", kind);
+
+                    var json = await wc.GetStringAsync(lookupUrl);
+                    result = JObject.Parse(json);
+                }
+
+                var results = new List<string>();
+
+                if (result == null || !result["titles"].Any()) return results;
+
+                if (result["titles"].Any(x => x["artistName"].ToString().ToLower().Contains(author.ToLower())))
+                {
+                    results.AddRange(result["titles"].Select(doc => doc["title"].ToString()));
+                }
+
+                return results;
             }
-
-            var results = new List<string>();
-
-            if (result == null || !result["titles"].Any()) return results;
-
-            results.AddRange(result["titles"].Select(doc => doc["title"].ToString()));
-
-            return results;
+            catch (Exception e)
+            {
+                Console.WriteLine("Error doing source lookup with Hoopla", e.ToString());
+                throw;
+            }
         }
 
         private static string BuildQuery(string title)

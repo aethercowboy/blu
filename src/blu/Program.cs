@@ -22,7 +22,7 @@ namespace blu
         // ReSharper disable once UnusedMember.Global
         public static void Main(string[] args)
         {
-            //args = new[] { "oliver", "twist", "dickens" };
+            //args = new[] { "you", "grossman" };
             var title = string.Join(" ", args.Take(args.Length - 1));
             var author = args.Last();
             var now = DateTime.Now;
