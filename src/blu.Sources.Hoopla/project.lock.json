@@ -1413,7 +1413,7 @@
       ]
     },
     "Microsoft.CSharp/4.0.1": {
-      "sha512": "2WiGDaGuNxAgXnrFozhrSK2o4Alx6HqGPqXPoxupFN2wz/sYNTODShKCyUUmkeZLeniqFT0RRIEYfP7Kt6TOhw==",
+      "sha512": "A7yrkiMCm3vCxx3sMAwHufiWMyZUD4Hq4UOd9ENiZodZdET5uHQGPiSHsosFrAynaeMV1NVjqkV7WoVuLXF/zA==",
       "type": "package",
       "path": "Microsoft.CSharp/4.0.1",
       "files": [
@@ -2221,7 +2221,7 @@
       ]
     },
     "System.Dynamic.Runtime/4.0.11": {
-      "sha512": "3+mhfPcMNzluVjnYJ6P0BrOUDnQ/5ttwrujb5efjW05KbVT9LqLg4a1ehDNgp3WdeK22MFzpghKL4BgsQY8EnQ==",
+      "sha512": "IthvtbggsQ7c0jf1KHXUFeyOmm8ak3YBFf+dHdMhYj+j65KHwMjH2MZKYB/iO1bB7fh3AyQOw+B74+Raa++owQ==",
       "type": "package",
       "path": "System.Dynamic.Runtime/4.0.11",
       "files": [

@@ -30,7 +30,7 @@ namespace blu.Sources.Hoopla.Sources
             {
                 wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
 
-                var query = BuildQuery(title, author);
+                var query = BuildQuery(title);
                 var kind = GetKind(format);
 
                 var lookupUrl = Url.Replace("[QUERY]", query)
@@ -49,9 +49,9 @@ namespace blu.Sources.Hoopla.Sources
             return results;
         }
 
-        private static string BuildQuery(string title, string author)
+        private static string BuildQuery(string title)
         {
-            var retval = string.Join("+", title.Replace(" ", "+"), author);
+            var retval = string.Join("+", title.Replace(" ", "+"));
 
             return retval;
         }
