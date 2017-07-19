@@ -63,3 +63,5 @@ bin/Debug/gutenberg-api.txt
 bin/
 obj/
 .vs/
+blu.sln.DotSettings.user
+UpgradeLog.htm

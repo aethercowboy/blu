@@ -1,4 +1,3 @@
 @echo off
-pushd src\blu
-dotnet run --project project.json %*
-popd
+dotnet build blu.sln
+dotnet run --project src\blu\blu.csproj %*

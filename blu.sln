@@ -1,32 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6B8453A1-173E-4D0A-95AA-BD790BDA236D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8CAF700-126F-4111-8492-C6B0F1F6F14A}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu", "src\blu\blu.xproj", "{918A7F1B-0A79-4692-8B19-2F4393F491CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu", "src\blu\blu.csproj", "{918A7F1B-0A79-4692-8B19-2F4393F491CC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Common", "src\blu.Common\blu.Common.xproj", "{FFC0544B-A9B3-488E-8472-E8828666B86A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Common", "src\blu.Common\blu.Common.csproj", "{FFC0544B-A9B3-488E-8472-E8828666B86A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.ArchiveOrg", "src\blu.Sources.ArchiveOrg\blu.Sources.ArchiveOrg.xproj", "{6FFF0027-A71C-40FF-BD16-78352EE83474}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.ArchiveOrg", "src\blu.Sources.ArchiveOrg\blu.Sources.ArchiveOrg.csproj", "{6FFF0027-A71C-40FF-BD16-78352EE83474}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.Clevnet", "src\blu.Sources.Clevnet\blu.Sources.Clevnet.xproj", "{6B66E176-AFD3-413F-A3CB-8BA8AD5D3A99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.Clevnet", "src\blu.Sources.Clevnet\blu.Sources.Clevnet.csproj", "{6B66E176-AFD3-413F-A3CB-8BA8AD5D3A99}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.GeaugaCountyPublicLibrary", "src\blu.Sources.GeaugaCountyPublicLibrary\blu.Sources.GeaugaCountyPublicLibrary.xproj", "{2A1BAC31-4E08-4A04-8692-DCD538614E14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.GeaugaCountyPublicLibrary", "src\blu.Sources.GeaugaCountyPublicLibrary\blu.Sources.GeaugaCountyPublicLibrary.csproj", "{2A1BAC31-4E08-4A04-8692-DCD538614E14}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.Gutenberg", "src\blu.Sources.Gutenberg\blu.Sources.Gutenberg.xproj", "{99A028D6-4DB9-4C7E-B38A-C85711109437}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.Gutenberg", "src\blu.Sources.Gutenberg\blu.Sources.Gutenberg.csproj", "{99A028D6-4DB9-4C7E-B38A-C85711109437}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.Hoopla", "src\blu.Sources.Hoopla\blu.Sources.Hoopla.xproj", "{A41E737B-8801-4CB4-8D27-BB0C138F8F39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.Hoopla", "src\blu.Sources.Hoopla\blu.Sources.Hoopla.csproj", "{A41E737B-8801-4CB4-8D27-BB0C138F8F39}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.HarrisCountyPublicLibrary", "src\blu.Sources.HarrisCountyPublicLibrary\blu.Sources.HarrisCountyPublicLibrary.xproj", "{FFAB42EE-0AF6-4E22-863C-4E88C901891F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.HarrisCountyPublicLibrary", "src\blu.Sources.HarrisCountyPublicLibrary\blu.Sources.HarrisCountyPublicLibrary.csproj", "{FFAB42EE-0AF6-4E22-863C-4E88C901891F}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "blu.Sources.Librivox", "src\blu.Sources.Librivox\blu.Sources.Librivox.xproj", "{5E8462E4-FFF4-4DF4-AD91-48E029964AEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.Librivox", "src\blu.Sources.Librivox\blu.Sources.Librivox.csproj", "{5E8462E4-FFF4-4DF4-AD91-48E029964AEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu.Sources.OhioDigitalLibrary", "src\blu.Sources.OhioDigitalLibrary\blu.Sources.OhioDigitalLibrary.csproj", "{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +69,10 @@ Global
 		{5E8462E4-FFF4-4DF4-AD91-48E029964AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E8462E4-FFF4-4DF4-AD91-48E029964AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E8462E4-FFF4-4DF4-AD91-48E029964AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +87,6 @@ Global
 		{A41E737B-8801-4CB4-8D27-BB0C138F8F39} = {6B8453A1-173E-4D0A-95AA-BD790BDA236D}
 		{FFAB42EE-0AF6-4E22-863C-4E88C901891F} = {6B8453A1-173E-4D0A-95AA-BD790BDA236D}
 		{5E8462E4-FFF4-4DF4-AD91-48E029964AEF} = {6B8453A1-173E-4D0A-95AA-BD790BDA236D}
+		{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0} = {6B8453A1-173E-4D0A-95AA-BD790BDA236D}
 	EndGlobalSection
 EndGlobal
