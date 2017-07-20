@@ -8,11 +8,13 @@ using blu.Common.Enums;
 using blu.Common.Sources;
 using HtmlAgilityPack;
 using System.Linq;
+using blu.Common;
 
 namespace blu.Sources.Librivox.Sources
 {
     public class Librivox : Library
     {
+
         protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook

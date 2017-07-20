@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.HarrisCountyPub
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.Librivox", "src\blu.Sources.Librivox\blu.Sources.Librivox.csproj", "{5E8462E4-FFF4-4DF4-AD91-48E029964AEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blu.Sources.OhioDigitalLibrary", "src\blu.Sources.OhioDigitalLibrary\blu.Sources.OhioDigitalLibrary.csproj", "{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blu.Sources.OhioDigitalLibrary", "src\blu.Sources.OhioDigitalLibrary\blu.Sources.OhioDigitalLibrary.csproj", "{D6CD05CD-0F6E-4A80-B0DB-3C0494019ED0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

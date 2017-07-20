@@ -14,6 +14,17 @@ namespace blu.Common.Sources
 
     public abstract class Library : ILibrary
     {
+        protected IBluConsole Console { get; }
+
+        protected Library() : this(new BluConsole())
+        {
+        }
+
+        private Library(IBluConsole console)
+        {
+            Console = console;
+        }
+
         protected abstract IList<Format> AllowedFormats { get; }
 
         public virtual async Task<IEnumerable<string>> Lookup(string title, string author, Format format)

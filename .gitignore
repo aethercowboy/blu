@@ -65,3 +65,5 @@ obj/
 .vs/
 blu.sln.DotSettings.user
 UpgradeLog.htm
+src/blu/output.html
+src/blu/gutenberg-api.txt

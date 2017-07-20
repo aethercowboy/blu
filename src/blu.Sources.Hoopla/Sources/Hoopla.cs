@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using blu.Common;
 using blu.Common.Enums;
 using blu.Common.Sources;
 using Newtonsoft.Json.Linq;
 
 namespace blu.Sources.Hoopla.Sources
 {
-    internal class Hoopla : Library
-    {
+    public class Hoopla : Library
+    { 
+
         protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook,
@@ -54,7 +56,7 @@ namespace blu.Sources.Hoopla.Sources
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error doing source lookup with Hoopla", e.ToString());
+                Console.WriteLine($"Error doing source lookup with Hoopla: {e}");
                 throw;
             }
         }

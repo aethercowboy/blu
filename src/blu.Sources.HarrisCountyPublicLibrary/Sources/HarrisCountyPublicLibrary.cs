@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using blu.Common;
 using blu.Common.Enums;
 using blu.Common.Sources;
 using HtmlAgilityPack;

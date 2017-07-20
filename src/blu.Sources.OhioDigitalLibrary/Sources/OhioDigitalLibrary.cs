@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using blu.Common;
 using blu.Common.Enums;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -15,7 +17,7 @@ using Newtonsoft.Json.Linq;
 namespace blu.Sources.OhioDigitalLibrary.Sources
 {
     public class OhioDigitalLibrary : Library
-    {
+    { 
         protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook,
@@ -44,39 +46,57 @@ namespace blu.Sources.OhioDigitalLibrary.Sources
 
             doc.LoadHtml(response);
 
+#if DEBUG
+            const string filename = "output.html";
+            if (!File.Exists(filename))
+            {
+                File.Create(filename);
+            }
+
+            File.WriteAllText(filename, doc.DocumentNode.OuterHtml);
+#endif
+
             var childNodes =
                 doc.DocumentNode.Descendants("script").Where(x => x.InnerText.Contains("window.OverDrive.mediaItems")).ToList();
 
             var results = new List<string>();
 
-            var re = new Regex(@"window[.]OverDrive[.]mediaItems\s*=\s*(.+?);");
+            var re = new Regex(@"window[.]OverDrive[.]mediaItems\s*=\s*(.+?);\n");
 
             foreach (var element in childNodes)
             {
-                var match = re.Match(element.InnerText);
-                if (match.Groups.Count < 2)
+                try
                 {
-                    return results;
+                    var match = re.Match(element.InnerText);
+                    if (match.Groups.Count < 2)
+                    {
+                        return results;
+                    }
+
+                    var group = match.Groups[1];
+
+                    if (group == null)
+                    {
+                        return results;
+                    }
+
+                    var jobject = JObject.Parse(group.Value);
+
+                    foreach (var entry in jobject)
+                    {
+                        var entryTitle = entry.Value["title"].ToString();
+                        var entryAuthor = entry.Value["firstCreatorName"].ToString();
+
+                        if (!entryTitle.ToLower().Contains(title) || !entryAuthor.ToLower().Contains(author)) continue;
+
+                        results.Add(entryTitle);
+                        break;
+                    }
                 }
-
-                var group = match.Groups[1];
-
-                if (group == null)
+                catch (Exception e)
                 {
-                    return results;
-                }
-
-                var jobject = JObject.Parse(group.Value);
-
-                foreach (var entry in jobject)
-                {
-                    var entryTitle = entry.Value["title"].ToString();
-                    var entryAuthor = entry.Value["firstCreatorName"].ToString();
-
-                    if (!entryTitle.ToLower().Contains(title) || !entryAuthor.ToLower().Contains(author)) continue;
-
-                    results.Add(entryTitle);
-                    break;
+                    Console.WriteLine($"There was a problem processing ODL request: {e}");
+                    throw;
                 }
             }
 
