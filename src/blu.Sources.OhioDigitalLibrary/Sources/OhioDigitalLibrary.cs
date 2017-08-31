@@ -46,15 +46,15 @@ namespace blu.Sources.OhioDigitalLibrary.Sources
 
             doc.LoadHtml(response);
 
-#if DEBUG
-            const string filename = "output.html";
-            if (!File.Exists(filename))
-            {
-                File.Create(filename);
-            }
+//#if DEBUG
+//            const string filename = "output.html";
+//            if (!File.Exists(filename))
+//            {
+//                File.Create(filename);
+//            }
 
-            File.WriteAllText(filename, doc.DocumentNode.OuterHtml);
-#endif
+//            File.WriteAllText(filename, doc.DocumentNode.OuterHtml);
+//#endif
 
             var childNodes =
                 doc.DocumentNode.Descendants("script").Where(x => x.InnerText.Contains("window.OverDrive.mediaItems")).ToList();

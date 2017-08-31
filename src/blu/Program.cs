@@ -11,7 +11,6 @@ using blu.Common.Sources;
 using System.Reflection;
 using blu.Common;
 using blu.Extensions;
-using blu.Sources.OhioDigitalLibrary.Sources;
 using Newtonsoft.Json;
 
 namespace blu
@@ -22,6 +21,7 @@ namespace blu
         private const string SkipFile = "skips.json";
         private static IBluConsole console;
         private static IList<Type> Libraries { get; set; }
+        private static IList<Type> Ignores { get; set; }
 
         // ReSharper disable once UnusedMember.Global
         public static void Main(string[] args)
@@ -30,10 +30,14 @@ namespace blu
             var title = string.Join(" ", args.Take(args.Length - 1));
             var author = args.Last();
 
-            //Libraries = new List<Type>
-            //{
-            //    typeof(OhioDigitalLibrary)
-            //};
+            Libraries = new List<Type> // if you want to limit the search to a certain group of sources, put their types here
+            {
+            };
+
+            Ignores = new List<Type> // if you want to exclude certain sources from the search, put their types here
+            {
+                typeof(Sources.OhioDigitalLibrary.Sources.OhioDigitalLibrary)
+            };
 
             console = new BluConsole();
 
@@ -90,6 +94,11 @@ namespace blu
                 if (Libraries != null && Libraries.Any())
                 {
                     plugins = plugins.Where(x => Libraries.Contains(x.GetType()));
+                }
+
+                if (Ignores != null && Ignores.Any())
+                {
+                    plugins = plugins.Where(x => !Ignores.Contains(x.GetType()));
                 }
 
                 foreach (var plugin in plugins.GroupBy(x => x.GetType()).Select(x => x.FirstOrDefault()))
