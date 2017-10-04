@@ -61,7 +61,7 @@ namespace blu.Sources.Clevnet.Sources
                 {
                     var valid =
                         element.Descendants("div")
-                            .Where(x => HtmlNodeHasClass(x, "displayElementText") && HtmlNodeHasClass(x, "CLV_TITLEDSP"))
+                            .Where(x => HtmlNodeHasClass(x, "displayElementText") && (HtmlNodeHasClass(x, "CLV_TITLEDSP") || HtmlNodeHasClass(x, "TITLE")))
                             .ToList();
 
                     if (valid == null || !valid.Any())
