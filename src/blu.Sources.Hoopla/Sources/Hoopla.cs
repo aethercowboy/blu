@@ -21,7 +21,7 @@ namespace blu.Sources.Hoopla.Sources
             Format.EMusic
         };
 
-        private string Url { get; } = "https://hoopla-ws.hoopladigital.com/search?q=[QUERY]&kind=[KIND]";
+        private string Url { get; } = "https://hoopla-ws.hoopladigital.com/v2/search/ALL?facets=[KIND]&limit=50&q=[QUERY]";
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {
@@ -34,7 +34,7 @@ namespace blu.Sources.Hoopla.Sources
                     wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
 
                     var query = BuildQuery(title);
-                    var kind = GetKind(format);
+                    var kind = $"{{\"kind\":[\"{GetKind(format)}\"]}}";
 
                     var lookupUrl = Url.Replace("[QUERY]", query)
                         .Replace("[KIND]", kind);
