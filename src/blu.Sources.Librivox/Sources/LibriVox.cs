@@ -24,27 +24,21 @@ namespace blu.Sources.Librivox.Sources
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {
-            string response;
+            var query = BuildQuery(title, author);
 
-            using (var wc = new HttpClient())
+            var lookupUrl = Url.Replace("[QUERY]", query);
+
+            string response = null;
+
+            try
             {
-                wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
-
-                var query = BuildQuery(title, author);
-
-                var lookupUrl = Url.Replace("[QUERY]", query);
-
-                response = null;
-
-                try
-                {
-                    response = await wc.GetStringAsync(lookupUrl);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                response = await HttpClient.GetStringAsync(lookupUrl);
             }
+            catch (Exception)
+            {
+                // ignored
+            }
+
 
             var results = new List<string>();
 

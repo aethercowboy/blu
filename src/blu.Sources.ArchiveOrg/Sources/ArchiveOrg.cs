@@ -24,19 +24,12 @@ namespace blu.Sources.ArchiveOrg.Sources
         {
             try
             {
-                dynamic result;
+                var query = BuildQuery(title, author, format);
 
-                using (var client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
+                var lookupUrl = Url.Replace("[QUERY]", query);
 
-                    var query = BuildQuery(title, author, format);
-
-                    var lookupUrl = Url.Replace("[QUERY]", query);
-
-                    var json = await client.GetStringAsync(lookupUrl);
-                    result = JsonConvert.DeserializeObject(json);
-                }
+                var json = await HttpClient.GetStringAsync(lookupUrl);
+                dynamic result = JsonConvert.DeserializeObject(json);
 
                 var results = new List<string>();
 

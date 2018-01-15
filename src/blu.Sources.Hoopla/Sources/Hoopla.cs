@@ -27,21 +27,15 @@ namespace blu.Sources.Hoopla.Sources
         {
             try
             {
-                JObject result;
+                var query = BuildQuery(title);
+                var kind = $"{{\"kind\":[\"{GetKind(format)}\"]}}";
 
-                using (var wc = new HttpClient())
-                {
-                    wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
+                var lookupUrl = Url.Replace("[QUERY]", query)
+                    .Replace("[KIND]", kind);
 
-                    var query = BuildQuery(title);
-                    var kind = $"{{\"kind\":[\"{GetKind(format)}\"]}}";
+                var json = await HttpClient.GetStringAsync(lookupUrl);
+                var result = JObject.Parse(json);
 
-                    var lookupUrl = Url.Replace("[QUERY]", query)
-                        .Replace("[KIND]", kind);
-
-                    var json = await wc.GetStringAsync(lookupUrl);
-                    result = JObject.Parse(json);
-                }
 
                 var results = new List<string>();
 

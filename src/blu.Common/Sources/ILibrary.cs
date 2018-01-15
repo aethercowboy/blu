@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using blu.Common.Enums;
 using HtmlAgilityPack;
@@ -9,11 +10,13 @@ namespace blu.Common.Sources
 {
     public interface ILibrary
     {
+        HttpClient HttpClient { get; set; }
         Task<IEnumerable<string>> Lookup(string title, string author, Format format);
     }
 
     public abstract class Library : ILibrary
     {
+        public HttpClient HttpClient { get; set; }
         protected IBluConsole Console { get; }
 
         protected Library() : this(new BluConsole())

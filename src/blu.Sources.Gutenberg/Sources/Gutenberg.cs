@@ -63,26 +63,21 @@ namespace blu.Sources.Gutenberg.Sources
 
                 string response;
 
-                using (var wc = new HttpClient())
+                var query = BuildQuery(title, author);
+
+                var lookupUrl = Url.Replace("[QUERY]", query);
+
+                try
                 {
-                    wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
+                    response = await HttpClient.GetStringAsync(lookupUrl);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Gutenberg is blocking us ({ex.Message}). Let's wait a day.");
+                    var wait = new TimeSpan(24, 0, 0);
 
-                    var query = BuildQuery(title, author);
-
-                    var lookupUrl = Url.Replace("[QUERY]", query);
-
-                    try
-                    {
-                        response = await wc.GetStringAsync(lookupUrl);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Gutenberg is blocking us ({ex.Message}). Let's wait a day.");
-                        var wait = new TimeSpan(24, 0, 0);
-
-                        UpdateAccessTime(wait);
-                        return results;
-                    }
+                    UpdateAccessTime(wait);
+                    return results;
                 }
 
                 var doc = new HtmlDocument();

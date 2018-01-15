@@ -4,6 +4,7 @@ using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 using blu.Common.Enums;
@@ -15,6 +16,7 @@ using Newtonsoft.Json;
 
 namespace blu
 {
+
     // ReSharper disable once UnusedMember.Global
     public class Program
     {
@@ -22,6 +24,8 @@ namespace blu
         private static IBluConsole console;
         private static IList<Type> Libraries { get; set; }
         private static IList<Type> Ignores { get; set; }
+
+        private static HttpClient HttpClient { get; set; }
 
         // ReSharper disable once UnusedMember.Global
         public static void Main(string[] args)
@@ -38,6 +42,9 @@ namespace blu
             {
                 typeof(Sources.OhioDigitalLibrary.Sources.OhioDigitalLibrary)
             };
+
+            HttpClient = new HttpClient();
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
 
             console = new BluConsole();
 
@@ -115,6 +122,8 @@ namespace blu
                             console.WriteLine("Skipping for now...");
                             continue;
                         }
+
+                        plugin.HttpClient = HttpClient;
 
                         var value = LibraryResponse(plugin, title, author);
                         console.WriteLine(value.Result);

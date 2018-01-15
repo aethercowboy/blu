@@ -22,18 +22,11 @@ namespace blu.Sources.HarrisCountyPublicLibrary.Sources
 
         protected override async Task<IEnumerable<string>> SourceLookup(string title, string author, Format format)
         {
-            string response;
+            var query = BuildQuery(title, author, format);
 
-            using (var wc = new HttpClient())
-            {
-                wc.DefaultRequestHeaders.Add("User-Agent", UserAgent.GoogleChrome);
+            var lookupUrl = Url.Replace("[QUERY]", query);
 
-                var query = BuildQuery(title, author, format);
-
-                var lookupUrl = Url.Replace("[QUERY]", query);
-
-                response = await wc.GetStringAsync(lookupUrl);
-            }
+            var response = await HttpClient.GetStringAsync(lookupUrl);
 
             var doc = new HtmlDocument();
 
