@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using blu.Common.Enums;
+﻿using blu.Common.Enums;
+using blu.Common.Extensions;
 using blu.Common.Sources;
 using HtmlAgilityPack;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using blu.Common;
-using blu.Common.Extensions;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace blu.Sources.Clevnet.Sources
 {
@@ -87,7 +86,7 @@ namespace blu.Sources.Clevnet.Sources
 
         private string BuildQuery(string title, string author, Format format)
         {
-            var parts = new List<string> {$"qu=TITLE%3D{title}", $"qu=AUTHOR%3D{author}"};
+            var parts = new List<string> { $"qu=TITLE%3D{title}", $"qu=AUTHOR%3D{author}" };
 
             var fmt = string.Empty;
 

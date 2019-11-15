@@ -1,10 +1,9 @@
-﻿using System;
+﻿using blu.Common.Enums;
+using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using blu.Common.Enums;
-using HtmlAgilityPack;
 
 namespace blu.Common.Sources
 {

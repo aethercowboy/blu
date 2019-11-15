@@ -1,14 +1,13 @@
-﻿using blu.Common.Extensions;
+﻿using blu.Common.Enums;
+using blu.Common.Extensions;
+using blu.Common.Sources;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using blu.Common.Enums;
-using blu.Common.Sources;
-using HtmlAgilityPack;
-using System.Linq;
-using blu.Common;
 
 namespace blu.Sources.Librivox.Sources
 {

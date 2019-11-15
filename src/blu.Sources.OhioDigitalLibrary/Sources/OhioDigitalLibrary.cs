@@ -1,23 +1,18 @@
-﻿using blu.Common.Sources;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using blu.Common;
-using blu.Common.Enums;
+﻿using blu.Common.Enums;
+using blu.Common.Sources;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace blu.Sources.OhioDigitalLibrary.Sources
 {
     public class OhioDigitalLibrary : Library
-    { 
+    {
         protected override IList<Format> AllowedFormats => new List<Format>
         {
             Format.DownloadableAudiobook,
@@ -40,15 +35,15 @@ namespace blu.Sources.OhioDigitalLibrary.Sources
 
             doc.LoadHtml(response);
 
-//#if DEBUG
-//            const string filename = "output.html";
-//            if (!File.Exists(filename))
-//            {
-//                File.Create(filename);
-//            }
+            //#if DEBUG
+            //            const string filename = "output.html";
+            //            if (!File.Exists(filename))
+            //            {
+            //                File.Create(filename);
+            //            }
 
-//            File.WriteAllText(filename, doc.DocumentNode.OuterHtml);
-//#endif
+            //            File.WriteAllText(filename, doc.DocumentNode.OuterHtml);
+            //#endif
 
             var childNodes =
                 doc.DocumentNode.Descendants("script").Where(x => x.InnerText.Contains("window.OverDrive.mediaItems")).ToList();

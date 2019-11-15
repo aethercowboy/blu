@@ -1,12 +1,11 @@
-﻿using System;
+﻿using blu.Common.Enums;
+using blu.Common.Extensions;
+using blu.Common.Sources;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using blu.Common;
-using blu.Common.Enums;
-using blu.Common.Sources;
-using Newtonsoft.Json;
-using blu.Common.Extensions;
 
 namespace blu.Sources.ArchiveOrg.Sources
 {
@@ -42,7 +41,7 @@ namespace blu.Sources.ArchiveOrg.Sources
 
                 return results;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

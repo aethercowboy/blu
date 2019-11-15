@@ -1,14 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using blu.Common.Enums;
-using blu.Common.Sources;
-using HtmlAgilityPack;
-using System.Linq;
-using blu.Common.Extensions;
 
 namespace blu.Sources.GeaugaCountyPublicLibrary.Sources
 {

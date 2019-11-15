@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using blu.Common.Enums;
+using blu.Common.Sources;
+using HtmlAgilityPack;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using blu.Common;
-using blu.Common.Enums;
-using blu.Common.Sources;
-using HtmlAgilityPack;
 
 namespace blu.Sources.HarrisCountyPublicLibrary.Sources
 {

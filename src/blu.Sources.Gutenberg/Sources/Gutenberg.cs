@@ -1,17 +1,16 @@
-﻿using System;
+﻿using blu.Common.Enums;
+using blu.Common.Extensions;
+using blu.Common.Sources;
+using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
-using blu.Common.Enums;
-using blu.Common.Sources;
-using HtmlAgilityPack;
-using System.Linq;
 using System.Threading;
-using blu.Common;
-using blu.Common.Extensions;
+using System.Threading.Tasks;
 
 namespace blu.Sources.Gutenberg.Sources
 {

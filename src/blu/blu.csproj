@@ -16,7 +16,6 @@
     <ProjectReference Include="..\blu.Common\blu.Common.csproj" />
     <ProjectReference Include="..\blu.Sources.ArchiveOrg\blu.Sources.ArchiveOrg.csproj" />
     <ProjectReference Include="..\blu.Sources.Clevnet\blu.Sources.Clevnet.csproj" />
-    <ProjectReference Include="..\blu.Sources.GeaugaCountyPublicLibrary\blu.Sources.GeaugaCountyPublicLibrary.csproj" />
     <ProjectReference Include="..\blu.Sources.Gutenberg\blu.Sources.Gutenberg.csproj" />
     <ProjectReference Include="..\blu.Sources.HarrisCountyPublicLibrary\blu.Sources.HarrisCountyPublicLibrary.csproj" />
     <ProjectReference Include="..\blu.Sources.Hoopla\blu.Sources.Hoopla.csproj" />

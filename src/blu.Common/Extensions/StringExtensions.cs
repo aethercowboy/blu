@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace blu.Common.Extensions
+﻿namespace blu.Common.Extensions
 {
     public static class StringExtensions
     {
