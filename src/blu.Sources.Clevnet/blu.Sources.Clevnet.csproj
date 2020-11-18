@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>blu.Sources.Clevnet</AssemblyName>
     <PackageId>blu.Sources.Clevnet</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.28" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
 
